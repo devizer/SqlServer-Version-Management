@@ -314,3 +314,25 @@ Uninstall-LocalDB-List "*"
 ```powershell
 Uninstall-LocalDB-List "2012", "2014"
 ```
+
+## Three ways to install
+
+1. Using `Install-Module`.If you have handreds already installed modules it is a bit slow. For example such Microsoft hosted build agent on GitHab actions and Azure devops has 240+ preinstalled method. Thus Install-Module takes one...two minutes.
+```powershell
+Install-Module "SqlServer-Version-Management"
+```
+
+2. In-memory load module into current powershell process.
+```powershell
+foreach($attempt in 1..3) { try { iex ((New-Object System.Net.WebClient).DownloadString('https://devizer.github.io/SqlServer-Version-Management/SqlServer-Version-Management.ps1')); break; } catch {sleep 1;} }
+```
+
+3. Persistent install module files into 
+```powershell
+$urlSource = 'https://devizer.github.io/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1';
+foreach($attempt in 1..3) { try { 
+  iex ((New-Object System.Net.WebClient).DownloadString($urlSource)); 
+  break; 
+} catch {sleep 1;} }
+```
+
