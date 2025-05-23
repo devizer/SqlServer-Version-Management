@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Install SqlServer Version Management Module</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Theme Styles -->
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --text: #000000;
+      --code-bg: #f6f8fa;
+      --button-bg: #e1e4e8;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --text: #c9d1d9;
+        --code-bg: #161b22;
+        --button-bg: #30363d;
+      }
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 6px;
+      position: relative;
+    }
+
+    h1, h2, h3 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.3em;
+    }
+
+    a {
+      color: #1e88e5;
+    }
+
+    /* Copy Button */
+    .copy-btn {
+      position: absolute;
+      top: 0.5em;
+      right: 0.5em;
+      background: var(--button-bg);
+      border: none;
+      padding: 0.4em;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .copy-btn:hover {
+      opacity: 1;
+    }
+    .copy-btn svg {
+      width: 1em;
+      height: 1em;
+      fill: var(--text);
+    }
+  </style>
+
+  <!-- Highlight.js GitHub Theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <style>
+     .hljs { background: #f6f8fa }
+     body { max-width: 1200px }
+     @media (prefers-color-scheme: dark) {
+       .hljs { background: #161b22 }
+     }
+  </style>
+  <!-- link rel="stylesheet" href="tables.css" -->
+  <style>
+  /* Modern TABLES */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.95em;
+  border: 1px solid #d0d7de;
+}
+
+thead {
+  background-color: #f6f8fa;
+}
+
+@media (prefers-color-scheme: dark) {
+  thead {
+    background-color: #161b22;
+  }
+}
+
+th, td {
+  border: 1px solid #d0d7de;
+  padding: 0.75em 1em;
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+@media (prefers-color-scheme: dark) {
+  tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  table, th, td {
+    border-color: #30363d;
+  }
+}
+  </style>
+
+<!-- anchors css -->
+<style>
+.header-anchor {
+  margin-left: 0.5em;
+  text-decoration: none;
+  color: var(--muted-text);
+  opacity: 0.6;
+  font-size: 0.8em;
+}
+
+.header-anchor:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+</style>
+
+
+</head>
+<body>
+<h2 id="install-module">Install module</h2>
+<p>There are three ways to install the module.</p>
+<h4 id="using-install-module">Using Install-Module</h4>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Install-Module <span class="st">&quot;SqlServer-Version-Management&quot;</span></span></code></pre></div>
+<p>Caution. When a system has hundreds of preinstalled PowerShell
+modules, Install-Module performance can degrade due to increased
+resolution time. For instance, Microsoft-hosted build agents on GitHub
+Actions and Azure DevOps include over 240 modules by default, which can
+cause Install-Module to take one to two minutes to complete.</p>
+<h4 id="in-process-scope">In-process scope</h4>
+<p>Load module into current powershell process only. Does not persist
+the module on disk. Avoid limitations of Install-Module</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$urlSource</span> <span class="op">=</span> <span class="st">&#39;https://devizer.github.io/SqlServer-Version-Management/SqlServer-Version-Management.ps1&#39;</span><span class="op">;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span><span class="op">(</span><span class="va">$attempt</span> <span class="kw">in</span> <span class="dv">1</span><span class="op">..</span><span class="dv">3</span><span class="op">)</span> <span class="op">{</span> <span class="cf">try</span> <span class="op">{</span> <span class="fu">iex</span> <span class="op">((</span><span class="fu">New-Object</span> System<span class="op">.</span><span class="fu">Net</span><span class="op">.</span><span class="fu">WebClient</span><span class="op">).</span><span class="fu">DownloadString</span><span class="op">(</span><span class="va">$urlSource</span><span class="op">));</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span> <span class="cf">catch</span> <span class="op">{</span><span class="fu">sleep</span> <span class="dv">0.1</span><span class="op">;}</span> <span class="op">}</span></span></code></pre></div>
+<h4 id="persistent-install">Persistent install</h4>
+<p>Install module files into one of $PSModulePath folder or
+$PSHOME/Modules/. Avoid limitations of Install-Module</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">$urlSource</span> <span class="op">=</span> <span class="st">&#39;https://devizer.github.io/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1&#39;</span><span class="op">;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span><span class="op">(</span><span class="va">$attempt</span> <span class="kw">in</span> <span class="dv">1</span><span class="op">..</span><span class="dv">3</span><span class="op">)</span> <span class="op">{</span> <span class="cf">try</span> <span class="op">{</span> <span class="fu">iex</span> <span class="op">((</span><span class="fu">New-Object</span> System<span class="op">.</span><span class="fu">Net</span><span class="op">.</span><span class="fu">WebClient</span><span class="op">).</span><span class="fu">DownloadString</span><span class="op">(</span><span class="va">$urlSource</span><span class="op">));</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span> <span class="cf">catch</span> <span class="op">{</span><span class="fu">sleep</span> <span class="dv">0.1</span><span class="op">;}</span> <span class="op">}</span></span></code></pre></div>
+
+<!-- Add copy buttons -->
+<script>
+  var copyIcon;
+  copyIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M10 1.75a.75.75 0 0 1 .75.75v.75h1.5A2.75 2.75 0 0 1 15 6v6.25A2.75 2.75 0 0 1 12.25 15H6a.75.75 0 0 1 0-1.5h6.25c.69 0 1.25-.56 1.25-1.25V6c0-.69-.56-1.25-1.25-1.25h-1.5v.75a.75.75 0 0 1-1.5 0V2.5a.75.75 0 0 1 .75-.75ZM2.75 3A2.75 2.75 0 0 0 0 5.75v6.5A2.75 2.75 0 0 0 2.75 15h6.5A2.75 2.75 0 0 0 12 12.25v-6.5A2.75 2.75 0 0 0 9.25 3h-6.5Zm0 1.5h6.5c.69 0 1.25.56 1.25 1.25v6.5c0 .69-.56 1.25-1.25 1.25h-6.5C2.06 13.5 1.5 12.94 1.5 12.25v-6.5C1.5 5.06 2.06 4.5 2.75 4.5Z"/></svg>
+  `;
+
+  copyIcon = `
+  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H8V7h11v14Z"/>
+  </svg>`;
+  
+  var checkIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M13.78 3.72a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 8.78a.75.75 0 1 1 1.06-1.06l2.72 2.72 6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg>
+  `;
+  checkIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+      <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 0 0-1.06 0L6.5 10.44 3.28 7.22a.75.75 0 1 0-1.06 1.06l3.75 3.75a.75.75 0 0 0 1.06 0l6.75-6.75a.75.75 0 0 0 0-1.06z"/>
+    </svg>
+  `;
+
+  document.querySelectorAll('pre code').forEach((block) => {
+    const button = document.createElement('button');
+    button.className = 'copy-btn';
+    button.innerHTML = copyIcon;
+    button.addEventListener('click', () => {
+      navigator.clipboard.writeText(block.innerText).then(() => {
+        button.innerHTML = checkIcon;
+        setTimeout(() => button.innerHTML = copyIcon, 1500);
+      });
+    });
+    block.parentNode.appendChild(button);
+  });
+</script>
+
+<!-- anchors js -->
+<script>
+  function slugify(text) {
+    return text.toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')   // Remove special chars
+      .replace(/\s+/g, '-')            // Replace spaces with dashes
+      .replace(/-+/g, '-');            // Collapse multiple dashes
+  }
+
+    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(header => {
+      var slug = slugify(header.textContent);
+      header.id = slug;
+
+      const anchor = document.createElement('a');
+      anchor.href = '#' + slug;
+      anchor.className = 'header-anchor';
+      anchor.setAttribute('aria-label', 'Permalink: ' + header.textContent);
+      anchor.textContent = '#';
+
+      /* 
+      anchor.addEventListener('click', e => {
+        e.preventDefault();
+        if (location.hash === `#`) {
+          history.replaceState(null, null, `#`);
+        } else {
+          location.hash = slug;
+        }
+      });
+      */
+
+      header.appendChild(anchor);
+    });
+</script>
+
+
+</body>
+</html>
