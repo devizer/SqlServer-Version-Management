@@ -1203,6 +1203,22 @@ function Is-Intel-Emulation-Available([int] $bitCount <# 32|64 #> = 64) {
 
 
 
+# Include File: [\Includes\Is-SshClient.ps1]
+function Is-SshClient() {
+  $simpleKeys = @(
+     "SSH_CLIENT",
+     "SSH_CONNECTION",
+     "SSH_TTY"
+     );
+
+  foreach($varName in $simpleKeys) {
+    $val=[Environment]::GetEnvironmentVariable($varName);
+    if ("$val" -ne "" -and $val -ne "False") { return $true; }
+  }
+
+  return $null;
+}
+
 # Include File: [\Includes\Is-Vc-Runtime-Installed.ps1]
 function Is-Vc-Runtime-Installed([int] $major, [string] $arch) {
   $vcList = Get-Installed-VC-Runtimes
@@ -2039,7 +2055,7 @@ function Download-Fresh-SQLServer-and-Extract {
   }
   else
   {
-    $quietArg = IIF (Is-BuildServer) "/Q" "/QS"
+    $quietArg = IIF ((Is-BuildServer) -or (Is-SshClinet)) "/Q" "/QS"
     $isExtractOk = ExtractSqlServerSetup "SQL Server $version $mediaType" $exeArchive.FullName $setupPath "$quietArg"
     if ($isExtractOk) {
       $ret["Launcher"] = Combine-Path $setupPath "Setup.exe";
@@ -2725,7 +2741,7 @@ function Install-SQLServer {
  
 #>
     $argFeatures = IIf ($meta.MediaType -eq "Advanced") "SQL_Engine,SQL_FullText" "SQL_Engine";
-    $argQuiet = IIf ((Is-BuildServer) -or $meta.Version -like "2005*" -or $meta.Version -like "2008-*") "/Q" "/QUIETSIMPLE";
+    $argQuiet = IIf (((Is-BuildServer) -or (Is-SshClinet)) -or $meta.Version -like "2005*" -or $meta.Version -like "2008-*") "/Q" "/QUIETSIMPLE";
     $argProgress = "/INDICATEPROGRESS";
     $argProgress = "";
     $argADDCURRENTUSERASSQLADMIN = IIf ($meta.MediaType -eq "Developer") "" "/ADDCURRENTUSERASSQLADMIN";
