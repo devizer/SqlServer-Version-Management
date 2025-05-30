@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.106';
+$ModuleVersion = '2.1.107';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.106`"",
+			"  ModuleVersion = `"2.1.107`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -2146,7 +2146,7 @@ $ModuleFiles = @(
 			"  }",
 			"  else",
 			"  {",
-			"    `$quietArg = IIF ((Is-BuildServer) -or (Is-SshClinet)) `"/Q`" `"/QS`"",
+			"    `$quietArg = IIF ((Is-BuildServer) -or (Is-SshClient)) `"/Q`" `"/QS`"",
 			"    `$isExtractOk = ExtractSqlServerSetup `"SQL Server `$version `$mediaType`" `$exeArchive.FullName `$setupPath `"`$quietArg`"",
 			"    if (`$isExtractOk) {",
 			"      `$ret[`"Launcher`"] = Combine-Path `$setupPath `"Setup.exe`";",
@@ -2832,7 +2832,7 @@ $ModuleFiles = @(
 			" ",
 			"#>",
 			"    `$argFeatures = IIf (`$meta.MediaType -eq `"Advanced`") `"SQL_Engine,SQL_FullText`" `"SQL_Engine`";",
-			"    `$argQuiet = IIf (((Is-BuildServer) -or (Is-SshClinet)) -or `$meta.Version -like `"2005*`" -or `$meta.Version -like `"2008-*`") `"/Q`" `"/QUIETSIMPLE`";",
+			"    `$argQuiet = IIf (((Is-BuildServer) -or (Is-SshClient)) -or `$meta.Version -like `"2005*`" -or `$meta.Version -like `"2008-*`") `"/Q`" `"/QUIETSIMPLE`";",
 			"    `$argProgress = `"/INDICATEPROGRESS`";",
 			"    `$argProgress = `"`";",
 			"    `$argADDCURRENTUSERASSQLADMIN = IIf (`$meta.MediaType -eq `"Developer`") `"`" `"/ADDCURRENTUSERASSQLADMIN`";",

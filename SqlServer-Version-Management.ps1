@@ -2055,7 +2055,7 @@ function Download-Fresh-SQLServer-and-Extract {
   }
   else
   {
-    $quietArg = IIF ((Is-BuildServer) -or (Is-SshClinet)) "/Q" "/QS"
+    $quietArg = IIF ((Is-BuildServer) -or (Is-SshClient)) "/Q" "/QS"
     $isExtractOk = ExtractSqlServerSetup "SQL Server $version $mediaType" $exeArchive.FullName $setupPath "$quietArg"
     if ($isExtractOk) {
       $ret["Launcher"] = Combine-Path $setupPath "Setup.exe";
@@ -2741,7 +2741,7 @@ function Install-SQLServer {
  
 #>
     $argFeatures = IIf ($meta.MediaType -eq "Advanced") "SQL_Engine,SQL_FullText" "SQL_Engine";
-    $argQuiet = IIf (((Is-BuildServer) -or (Is-SshClinet)) -or $meta.Version -like "2005*" -or $meta.Version -like "2008-*") "/Q" "/QUIETSIMPLE";
+    $argQuiet = IIf (((Is-BuildServer) -or (Is-SshClient)) -or $meta.Version -like "2005*" -or $meta.Version -like "2008-*") "/Q" "/QUIETSIMPLE";
     $argProgress = "/INDICATEPROGRESS";
     $argProgress = "";
     $argADDCURRENTUSERASSQLADMIN = IIf ($meta.MediaType -eq "Developer") "" "/ADDCURRENTUSERASSQLADMIN";
