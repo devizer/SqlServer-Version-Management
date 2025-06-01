@@ -460,7 +460,7 @@ function Extract-Archive-by-Default-Full-7z([string] $fromArchive, [string] $toD
   New-Item -Path "$($toDirectory)" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
   $full7zExe = "$(Get-Full7z-Exe-FullPath-for-Windows)"
   try { $fileOnly = [System.IO.Path]::GetFileName($fromArchive); } catch { $fileOnly = $fromArchive; }
-  $execResult = Execute-Process-Smarty "'$fileOnly' Extractor" $full7zExe @($extractCommand, "-y", "-o`"$toDirectory`"", "$fromArchive") -Hidden;
+  $execResult = Execute-Process-Smarty "'$fileOnly' Extractor" $full7zExe @($extractCommand, "-y", "-o`"$toDirectory`"", "`"$fromArchive`"") -Hidden;
   $ret = $true;
   if ($execResult -and $execResult.Error) { $ret = $fasle; }
   return $ret;
@@ -723,7 +723,7 @@ function ExtractArchiveBy7zMini([string] $fromArchive, [string] $toDirectory) {
   pushd "$($toDirectory)"
   $mini7z = "$(Get-Mini7z-Exe-FullPath-for-Windows)"
   # "-o`"$plainFolder`""
-  $commandLine=@("x", "-y", "$fromArchive")
+  $commandLine=@("x", "-y", "`"$fromArchive`"")
   Troubleshoot-Info "fromArchive: '$fromArchive'; commandLine: '$commandLine'"
   # ok on pwsh and powersheel
   & "$mini7z" @commandLine
@@ -736,7 +736,7 @@ function ExtractArchiveByDefault7zFull([string] $fromArchive, [string] $toDirect
   # pushd "$($toDirectory)"
   $full7zExe = "$(Get-Full7z-Exe-FullPath-for-Windows)"
   Troubleshoot-Info "`"$fromArchive`" $([char]8594) " -Highlight "`"$($toDirectory)`"" " by `"$full7zExe`""
-  & "$full7zExe" @("$extractCommand", "-y", "-o`"$($toDirectory)`"", "$fromArchive")
+  & "$full7zExe" @("$extractCommand", "-y", "-o`"$($toDirectory)`"", "`"$fromArchive`"")
   $isExtractOk = $?;
   return $isExtractOk;
 }

@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.107';
+$ModuleVersion = '2.1.108';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.107`"",
+			"  ModuleVersion = `"2.1.108`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -551,7 +551,7 @@ $ModuleFiles = @(
 			"  New-Item -Path `"`$(`$toDirectory)`" -ItemType Directory -Force -EA SilentlyContinue | Out-Null",
 			"  `$full7zExe = `"`$(Get-Full7z-Exe-FullPath-for-Windows)`"",
 			"  try { `$fileOnly = [System.IO.Path]::GetFileName(`$fromArchive); } catch { `$fileOnly = `$fromArchive; }",
-			"  `$execResult = Execute-Process-Smarty `"'`$fileOnly' Extractor`" `$full7zExe @(`$extractCommand, `"-y`", `"-o```"`$toDirectory```"`", `"`$fromArchive`") -Hidden;",
+			"  `$execResult = Execute-Process-Smarty `"'`$fileOnly' Extractor`" `$full7zExe @(`$extractCommand, `"-y`", `"-o```"`$toDirectory```"`", `"```"`$fromArchive```"`") -Hidden;",
 			"  `$ret = `$true;",
 			"  if (`$execResult -and `$execResult.Error) { `$ret = `$fasle; }",
 			"  return `$ret;",
@@ -814,7 +814,7 @@ $ModuleFiles = @(
 			"  pushd `"`$(`$toDirectory)`"",
 			"  `$mini7z = `"`$(Get-Mini7z-Exe-FullPath-for-Windows)`"",
 			"  # `"-o```"`$plainFolder```"`"",
-			"  `$commandLine=@(`"x`", `"-y`", `"`$fromArchive`")",
+			"  `$commandLine=@(`"x`", `"-y`", `"```"`$fromArchive```"`")",
 			"  Troubleshoot-Info `"fromArchive: '`$fromArchive'; commandLine: '`$commandLine'`"",
 			"  # ok on pwsh and powersheel",
 			"  & `"`$mini7z`" @commandLine",
@@ -827,7 +827,7 @@ $ModuleFiles = @(
 			"  # pushd `"`$(`$toDirectory)`"",
 			"  `$full7zExe = `"`$(Get-Full7z-Exe-FullPath-for-Windows)`"",
 			"  Troubleshoot-Info `"```"`$fromArchive```" `$([char]8594) `" -Highlight `"```"`$(`$toDirectory)```"`" `" by ```"`$full7zExe```"`"",
-			"  & `"`$full7zExe`" @(`"`$extractCommand`", `"-y`", `"-o```"`$(`$toDirectory)```"`", `"`$fromArchive`")",
+			"  & `"`$full7zExe`" @(`"`$extractCommand`", `"-y`", `"-o```"`$(`$toDirectory)```"`", `"```"`$fromArchive```"`")",
 			"  `$isExtractOk = `$?;",
 			"  return `$isExtractOk;",
 			"}",
