@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.108';
+$ModuleVersion = '2.1.109';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.108`"",
+			"  ModuleVersion = `"2.1.109`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1079,7 +1079,7 @@ $ModuleFiles = @(
 			"  if (-not `$fileExists) { return `$null; }",
 			"  `$hashAlg = [System.Security.Cryptography.HashAlgorithm]::Create(`$algorithm)",
 			"  try {",
-			"    `$fileStream = new-object System.IO.FileStream(`$fileName, `"Open`", `"Read`", `"ReadWrite`")",
+			"    `$fileStream = new-object System.IO.FileStream(`$fileName, `"Open`", `"Read`", `"ReadWrite`", 32768)",
 			"    `$bytes = `$hashAlg.ComputeHash(`$fileStream);",
 			"    # `$ret=`"`";",
 			"    # foreach(`$b in `$bytes) { `$ret = `"`$(`$ret)`$(`$b.ToString(`"X2`"))`"; }",

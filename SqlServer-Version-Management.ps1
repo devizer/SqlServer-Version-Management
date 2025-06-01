@@ -988,7 +988,7 @@ function Get-Smarty-FileHash([string] $fileName, [string] $algorithm = "MD5") {
   if (-not $fileExists) { return $null; }
   $hashAlg = [System.Security.Cryptography.HashAlgorithm]::Create($algorithm)
   try {
-    $fileStream = new-object System.IO.FileStream($fileName, "Open", "Read", "ReadWrite")
+    $fileStream = new-object System.IO.FileStream($fileName, "Open", "Read", "ReadWrite", 32768)
     $bytes = $hashAlg.ComputeHash($fileStream);
     # $ret="";
     # foreach($b in $bytes) { $ret = "$($ret)$($b.ToString("X2"))"; }
