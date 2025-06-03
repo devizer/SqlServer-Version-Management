@@ -1627,7 +1627,7 @@ $SqlServer2010DownloadLinks = @(
     # SP1 does not work on Pipeline
     # Developer="https://archive.org/download/sql-server-2014-enterprise-sp-1-x-64/SQL_Server_2014_Enterprise_SP1_x64.rar" #SP1
     # DeveloperFormat="ISO-In-Archive"
-    Developer=@("https://archive.org/download/sql_server_2014_sp3_developer_edition_x64.7z/sql_server_2014_sp3_developer_edition_x64.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2014_sp3_developer_edition_x64.7z/download") #SP3, 12.0.6024
+    Developer=@("https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2014-x64-ENU.7z", "https://archive.org/download/sql_server_2014_sp3_developer_edition_x64.7z/sql_server_2014_sp3_developer_edition_x64.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2014_sp3_developer_edition_x64.7z/download") #SP3, 12.0.6024
     DeveloperFormat="Archive"
     LocalDB ="https://download.microsoft.com/download/3/9/F/39F968FA-DEBB-4960-8F9E-0E7BB3035959/ENU/x64/SqlLocalDB.msi"
     CU=@(
@@ -1639,7 +1639,7 @@ $SqlServer2010DownloadLinks = @(
     Advanced ="https://download.microsoft.com/download/3/9/F/39F968FA-DEBB-4960-8F9E-0E7BB3035959/SQLEXPRADV_x86_ENU.exe"
     # Developer="https://archive.org/download/microsoft-sql-server-2014-enterprise-sp-3-32-bit/Microsoft%20SQL%20Server%202014%20Enterprise%20SP3%20%2832Bit%29.zip"
     # DeveloperFormat="ISO-In-Archive"
-    Developer=("https://archive.org/download/sql_server_2014_sp3_developer_edition_x86.7z/sql_server_2014_sp3_developer_edition_x86.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2014_sp3_developer_edition_x86.7z/download")
+    Developer=("https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2014-x86-ENU.7z", "https://archive.org/download/sql_server_2014_sp3_developer_edition_x86.7z/sql_server_2014_sp3_developer_edition_x86.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2014_sp3_developer_edition_x86.7z/download")
     DeveloperFormat="Archive"
     LocalDB  ="https://download.microsoft.com/download/3/9/F/39F968FA-DEBB-4960-8F9E-0E7BB3035959/ENU/x86/SqlLocalDB.msi"
     CU=@(
@@ -1649,7 +1649,7 @@ $SqlServer2010DownloadLinks = @(
     Version="2012-x64"; #SP4
     Core ="https://download.microsoft.com/download/B/D/E/BDE8FAD6-33E5-44F6-B714-348F73E602B6/SQLEXPR_x64_ENU.exe" 
     Advanced="https://download.microsoft.com/download/B/D/E/BDE8FAD6-33E5-44F6-B714-348F73E602B6/SQLEXPRADV_x64_ENU.exe" 
-    Developer=@("https://archive.org/download/sql_server_2012_sp4_developer_x86_x64/sql_server_2012_sp4_developer_x64.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2012_sp4_developer_edition_x64.7z/download") # 11.0.7001.0 SP4
+    Developer=@("https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2012-x64-ENU.7z", "https://archive.org/download/sql_server_2012_sp4_developer_x86_x64/sql_server_2012_sp4_developer_x64.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2012_sp4_developer_edition_x64.7z/download") # 11.0.7001.0 SP4
     DeveloperFormat="Archive"
     LocalDB ="https://download.microsoft.com/download/B/D/E/BDE8FAD6-33E5-44F6-B714-348F73E602B6/ENU/x64/SqlLocalDB.msi"
     CU=@(
@@ -1659,7 +1659,7 @@ $SqlServer2010DownloadLinks = @(
     Version="2012-x86"; #SP4
     Core ="https://download.microsoft.com/download/B/D/E/BDE8FAD6-33E5-44F6-B714-348F73E602B6/SQLEXPR_x86_ENU.exe" 
     Advanced="https://download.microsoft.com/download/B/D/E/BDE8FAD6-33E5-44F6-B714-348F73E602B6/SQLEXPRADV_x86_ENU.exe"
-    Developer=@("https://archive.org/download/sql_server_2012_sp4_developer_x86_x64/sql_server_2012_sp4_developer_x86.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2012_sp4_developer_edition_x86.7z/download") # 11.0.7001.0 SP4
+    Developer=@("https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2012-x86-ENU.7z", "https://archive.org/download/sql_server_2012_sp4_developer_x86_x64/sql_server_2012_sp4_developer_x86.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2012_sp4_developer_edition_x86.7z/download") # 11.0.7001.0 SP4
     DeveloperFormat="Archive"
     LocalDB ="https://download.microsoft.com/download/B/D/E/BDE8FAD6-33E5-44F6-B714-348F73E602B6/ENU/x86/SqlLocalDB.msi"
     CU=@(
@@ -1670,7 +1670,7 @@ $SqlServer2010DownloadLinks = @(
     Version="2008R2-x64"; #SP2
     Core    ="https://download.microsoft.com/download/0/4/B/04BE03CD-EAF3-4797-9D8D-2E08E316C998/SQLEXPR_x64_ENU.exe" 
     Advanced="https://download.microsoft.com/download/0/4/B/04BE03CD-EAF3-4797-9D8D-2E08E316C998/SQLEXPRADV_x64_ENU.exe" 
-    Developer=@("https://archive.org/download/sql_server_2008r2_sp3_developer_edition_x86_x64_ia64/sql_server_2008r2_sp3_developer_edition_x64.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2008r2_sp3_developer_edition_x64.7z/download")
+    Developer=@("https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2008R2-x64-ENU.7z", "https://archive.org/download/sql_server_2008r2_sp3_developer_edition_x86_x64_ia64/sql_server_2008r2_sp3_developer_edition_x64.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2008r2_sp3_developer_edition_x64.7z/download")
     DeveloperFormat="Archive"
     CU=@(
       @{ Id="SP3"; Url="https://download.microsoft.com/download/D/7/A/D7A28B6C-FCFE-4F70-A902-B109388E01E9/ENU/SQLServer2008R2SP3-KB2979597-x64-ENU.exe" }
@@ -1680,7 +1680,7 @@ $SqlServer2010DownloadLinks = @(
     Version="2008R2-x86"; #SP2
     Core    ="https://download.microsoft.com/download/0/4/B/04BE03CD-EAF3-4797-9D8D-2E08E316C998/SQLEXPR_x86_ENU.exe" 
     Advanced="https://download.microsoft.com/download/0/4/B/04BE03CD-EAF3-4797-9D8D-2E08E316C998/SQLEXPRADV_x86_ENU.exe"
-    Developer=@("https://archive.org/download/sql_server_2008r2_sp3_developer_edition_x86_x64_ia64/sql_server_2008r2_sp3_developer_edition_x86.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2008r2_sp3_developer_edition_x86.7z/download")
+    Developer=@("https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2008R2-x86-ENU.7z", "https://archive.org/download/sql_server_2008r2_sp3_developer_edition_x86_x64_ia64/sql_server_2008r2_sp3_developer_edition_x86.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2008r2_sp3_developer_edition_x86.7z/download")
     DeveloperFormat="Archive"
     CU=@(
       @{ Id="SP3"; Url="https://download.microsoft.com/download/D/7/A/D7A28B6C-FCFE-4F70-A902-B109388E01E9/ENU/SQLServer2008R2SP3-KB2979597-x86-ENU.exe" }
@@ -1695,7 +1695,7 @@ $SqlServer2010DownloadLinks = @(
     # Core  ="https://web.archive.org/web/20160617214727/https://download.microsoft.com/download/0/F/D/0FD88169-F86F-46E1-8B3B-56C44F6E9505/SQLEXPR_x64_ENU.exe"  #SP3
     Core    ="https://archive.org/download/sql-server-express-2008-x86-x64-sp4/SQL-Core-2008-x64-ENU.exe"
     Advanced="https://download.microsoft.com/download/e/9/b/e9bcf5d7-2421-464f-94dc-0c694ba1b5a4/SQLEXPRADV_x64_ENU.exe" #RTM
-    Developer=@("https://archive.org/download/sql_server_2008_developer_edition_x86_x64/sql_server_2008_rtm_developer_edition_x64.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2008_rtm_developer_edition_x64.7z/download") # RTM
+    Developer=@("https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2008-x64-ENU.7z", "https://archive.org/download/sql_server_2008_developer_edition_x86_x64/sql_server_2008_rtm_developer_edition_x64.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2008_rtm_developer_edition_x64.7z/download") # RTM
     DeveloperFormat="Archive"
     CU=@(
       # x64 is alive
@@ -1710,7 +1710,7 @@ $SqlServer2010DownloadLinks = @(
     # Core  ="https://web.archive.org/web/20160617214727/https://download.microsoft.com/download/0/F/D/0FD88169-F86F-46E1-8B3B-56C44F6E9505/SQLEXPR_x86_ENU.exe" #SP3
     Core    ="https://archive.org/download/sql-server-express-2008-x86-x64-sp4/SQL-Core-2008-x86-ENU.exe"
     Advanced="https://download.microsoft.com/download/e/9/b/e9bcf5d7-2421-464f-94dc-0c694ba1b5a4/SQLEXPRADV_x86_ENU.exe" #RTM
-    Developer=@("https://archive.org/download/sql_server_2008_developer_edition_x86_x64/sql_server_2008_rtm_developer_edition_x86.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2008_rtm_developer_edition_x86.7z/download") # RTM
+    Developer=@("https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2008-x86-ENU.7z", "https://archive.org/download/sql_server_2008_developer_edition_x86_x64/sql_server_2008_rtm_developer_edition_x86.7z", "https://sourceforge.net/projects/archived-sql-servers/files/sql_server_2008_rtm_developer_edition_x86.7z/download") # RTM
     DeveloperFormat="Archive"
     CU=@(
       # x86 is removed
@@ -1738,6 +1738,17 @@ $SqlServer2010DownloadLinks = @(
               (sp2) https://archive.org/download/SQLEXPR_ADV_2005_SP2/SQLEXPR_ADV.EXE
 was: 9.0.2047 (sp1) https://ia601402.us.archive.org/34/items/Microsoft_SQL_Server_2005/en_sql_2005_express_adv.exe
 now: 9.0.5000 (sp4) https://catalog.s.download.windowsupdate.com/msdownload/update/software/svpk/2011/01/sqlserver2005expressadvancedsp4-kb2463332-x86-enu_b8640fde879a23a2372b27f158d54abb5079033e.exe
+#>
+
+<# Developer Edition, Small 64M Dictionary
+https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2008-x64-ENU.7z
+https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2008-x86-ENU.7z
+https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2008R2-x64-ENU.7z
+https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2008R2-x86-ENU.7z
+https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2012-x64-ENU.7z
+https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2012-x86-ENU.7z
+https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2014-x64-ENU.7z
+https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2014-x86-ENU.7z
 #>
 
 # Include File: [\Includes.SqlServer\$SqlServerAlreadyUpdatedList.ps1]
