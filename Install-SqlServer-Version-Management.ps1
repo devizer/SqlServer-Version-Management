@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.109';
+$ModuleVersion = '2.1.110';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.109`"",
+			"  ModuleVersion = `"2.1.110`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -815,6 +815,8 @@ $ModuleFiles = @(
 			"  `$mini7z = `"`$(Get-Mini7z-Exe-FullPath-for-Windows)`"",
 			"  # `"-o```"`$plainFolder```"`"",
 			"  `$commandLine=@(`"x`", `"-y`", `"```"`$fromArchive```"`")",
+			"  `$singleCore7z=@(); `$memInfo = Get-Memory-Info; `$procCount = ([Environment]::ProcessorCount); if (`$memInfo -and (`$memInfo.Free) -and (`$memInfo.Free -lt (640*`$procCount))) { `$singleCore7z=@(`"-mmt=1`") }",
+			"  `$commandLine += `$singleCore7z",
 			"  Troubleshoot-Info `"fromArchive: '`$fromArchive'; commandLine: '`$commandLine'`"",
 			"  # ok on pwsh and powersheel",
 			"  & `"`$mini7z`" @commandLine",
@@ -826,8 +828,13 @@ $ModuleFiles = @(
 			"  New-Item -Path `"`$(`$toDirectory)`" -ItemType Directory -Force -EA SilentlyContinue | Out-Null",
 			"  # pushd `"`$(`$toDirectory)`"",
 			"  `$full7zExe = `"`$(Get-Full7z-Exe-FullPath-for-Windows)`"",
+			"",
+			"  `$commandLine = @(`"`$extractCommand`", `"-y`", `"-o```"`$(`$toDirectory)```"`", `"```"`$fromArchive```"`")",
+			"  `$singleCore7z=@(); `$memInfo = Get-Memory-Info; `$procCount = ([Environment]::ProcessorCount); if (`$memInfo -and (`$memInfo.Free) -and (`$memInfo.Free -lt (640*`$procCount))) { `$singleCore7z=@(`"-mmt=1`") }",
+			"  `$commandLine += `$singleCore7z",
+			"  ",
 			"  Troubleshoot-Info `"```"`$fromArchive```" `$([char]8594) `" -Highlight `"```"`$(`$toDirectory)```"`" `" by ```"`$full7zExe```"`"",
-			"  & `"`$full7zExe`" @(`"`$extractCommand`", `"-y`", `"-o```"`$(`$toDirectory)```"`", `"```"`$fromArchive```"`")",
+			"  & `"`$full7zExe`" `$commandLine",
 			"  `$isExtractOk = `$?;",
 			"  return `$isExtractOk;",
 			"}",
@@ -3030,7 +3037,10 @@ $ModuleFiles = @(
 			"  foreach(`$logsFolder in `$folders) {",
 			"    `$archiveName=`$logsFolder.Substring([System.IO.Path]::GetPathRoot(`$logsFolder).Length).Replace(`"\`", ([char]8594).ToString())",
 			"    Say `"Pack '`$logsFolder' as ```"`$toFolder\`$archiveName.7z```"`"",
-			"    & `"`$sevenZip`" @(`"a`", `"-y`", `"-mx=`$compression`", `"-ms=on`", `"-mqs=on`", `"`$toFolder\`$archiveName.7z`", `"`$logsFolder\*`") | out-null",
+			"    `$commandLine = @(`"a`", `"-y`", `"-mx=`$compression`", `"-ms=on`", `"-mqs=on`", `"`$toFolder\`$archiveName.7z`", `"`$logsFolder\*`")",
+			"    `$singleCore7z=@(); `$memInfo = Get-Memory-Info; `$procCount = ([Environment]::ProcessorCount); if (`$memInfo -and (`$memInfo.Free) -and (`$memInfo.Free -lt (640*`$procCount))) { `$singleCore7z=@(`"-mmt=1`") }",
+			"    `$commandLine += `$singleCore7z",
+			"    & `"`$sevenZip`" `$commandLine | out-null",
 			"    if (-not `$?) {",
 			"      Write-Host `"Failed publishing '`$archiveName' to folder '`$toFolder'`" -ForegroundColor DarkRed",
 			"      # return `$false;",
