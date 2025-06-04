@@ -1886,6 +1886,51 @@ $SqlServerDownloadLinks_Via_Manager = @(
 
 # $SqlServerDownloadLinks | ConvertTo-Json -Depth 32
 
+# Include File: [\Includes.SqlServer\Clean-Up-Sql-Server-Databases.ps1]
+function Clean-Up-Sql-Server-Databases([string] $title, [string] $connectionString, <# or #>[string] $instance, [ScriptBlock] $filter, [int] $timeoutSec = 30) {
+  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=$timeoutSec;Pooling=False" }
+  $startAt = [System.Diagnostics.Stopwatch]::StartNew();
+
+  $builder = new-object System.Data.SqlClient.SqlConnectionStringBuilder($connectionString);
+  $dataSource = $builder.DataSource
+  Write-Host "Clean up SQL Server '$dataSource'"
+
+  $dbList = @();
+
+  $sql = "Select name [Name] From sys.databases db Where Cast(Case When db.name in ('master','model','msdb','tempdb') Then 1 Else db.is_distributor End AS bit) = 0 Order By 1;"
+  $con = New-Object System.Data.SqlClient.SqlConnection($connectionString);
+  $con.Open();
+  $cmd = new-object System.Data.SqlClient.SqlCommand($sql, $con)
+  $cmd.CommandTimeout = $timeoutSec;
+  $dataAdapter = new-object System.Data.SqlClient.SqlDataAdapter($cmd);
+  $dataTable = new-object System.Data.DataTable;
+  $__ = $dataAdapter.Fill($dataTable);
+  foreach($row in $dataTable.Rows) {
+    $dbName = $row["Name"]
+    $dbList += [PSCustomObject] @{DataSource = $dataSource; Database = $dbName; Description = "[$dbName] at '$dataSource'"} 
+  }
+
+  $dbList | ft -Property Database -AutoSize | Out-String -Width 1234 | Out-Host
+
+  foreach($db in $dbList) {
+    $toKill = If ($null -eq $filter) { $false } Else { ForEach-Object -InputObject $db -Process $filter | Select -First 1 }
+    if ($toKill) {
+      Write-Host "Deleting DB $($db.Description)"
+      $sqlDelete = "IF SERVERPROPERTY('EngineEdition') <> 5 EXEC(N'ALTER DATABASE [$($db.Database)] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;'); Exec(N'Drop Database [$($db.Database)]');";
+      $cmd = new-object System.Data.SqlClient.SqlCommand($sqlDelete, $con)
+      $cmd.CommandTimeout = $timeoutSec;
+      $__ = $cmd.ExecuteNonQuery();
+      Write-Host "Database successfully deleted: $($db.Description)" -ForeGroundColor DarkGreen
+    } else {
+      Write-Host "Keep Existing DB $($db.Description)"
+    }
+  }
+}
+
+# Clean-Up-Sql-Server-Databases -Title "Local Default SQL Server" -Instance "(local)"
+# Clean-Up-Sql-Server-Databases -Title "Local Default SQL Server" -Instance "(local)" -Filter { $_.Database -match "Test" }
+
+
 # Include File: [\Includes.SqlServer\Create-LocalDB-Instance.ps1]
 # Using latest SQLLocalDB.exe
 function Create-LocalDB-Instance([string] $instanceName, [string] $optionalVersion) {
@@ -2860,6 +2905,14 @@ function Invoke-LocalDB-Executable([string] $title, [string] $version, [string[]
   return $false
 }
 
+function Stop-LocalDB-Instance([string] $title, [string] $version, [string] $instance, [switch] $noWait) {
+  if (-not $title) { $title = "LocalDB Instance '$instance'" }
+  $p = @("stop", "`"$instance`"");
+  if ($noWait) { $p += "-i" }
+  $__ = Invoke-LocalDB-Executable -Title $title -Version $version -Parameters $p
+}
+
+# Stop-LocalDB-Instance -Instance "MSSQLLocalDB" -NoWait
 
 # Include File: [\Includes.SqlServer\Invoke-SqlServer-Command.ps1]
 function Invoke-SqlServer-Command([string] $title, [string] $connectionString, <# or #>[string] $instance, [string] $sqlCommand, [int] $timeoutSec = 30) {
