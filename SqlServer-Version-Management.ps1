@@ -1916,7 +1916,15 @@ function Clean-Up-Sql-Server-Databases([string] $title, [string] $connectionStri
     $toKill = If ($null -eq $filter) { $false } Else { ForEach-Object -InputObject $db -Process $filter | Select -First 1 }
     if ($toKill) {
       Write-Host "Deleting DB $($db.Description)"
-      $sqlDelete = "IF SERVERPROPERTY('EngineEdition') <> 5 EXEC(N'ALTER DATABASE [$($db.Database)] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;'); Exec(N'Drop Database [$($db.Database)]');";
+      $sqlDelete = @"
+Begin Try 
+   IF SERVERPROPERTY('EngineEdition') <> 5 EXEC(N'ALTER DATABASE [$($db.Database)] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;')
+End Try 
+Begin Catch 
+  Print 'db already offline or does not exists' 
+End Catch 
+Exec(N'Drop Database [$($db.Database)]');
+"@;
       $cmd = new-object System.Data.SqlClient.SqlCommand($sqlDelete, $con)
       $cmd.CommandTimeout = $timeoutSec;
       $__ = $cmd.ExecuteNonQuery();

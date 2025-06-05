@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.112';
+$ModuleVersion = '2.1.113';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.112`"",
+			"  ModuleVersion = `"2.1.113`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -2007,7 +2007,15 @@ $ModuleFiles = @(
 			"    `$toKill = If (`$null -eq `$filter) { `$false } Else { ForEach-Object -InputObject `$db -Process `$filter | Select -First 1 }",
 			"    if (`$toKill) {",
 			"      Write-Host `"Deleting DB `$(`$db.Description)`"",
-			"      `$sqlDelete = `"IF SERVERPROPERTY('EngineEdition') <> 5 EXEC(N'ALTER DATABASE [`$(`$db.Database)] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;'); Exec(N'Drop Database [`$(`$db.Database)]');`";",
+			"      `$sqlDelete = @`"",
+			"Begin Try ",
+			"   IF SERVERPROPERTY('EngineEdition') <> 5 EXEC(N'ALTER DATABASE [`$(`$db.Database)] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;')",
+			"End Try ",
+			"Begin Catch ",
+			"  Print 'db already offline or does not exists' ",
+			"End Catch ",
+			"Exec(N'Drop Database [`$(`$db.Database)]');",
+			"`"@;",
 			"      `$cmd = new-object System.Data.SqlClient.SqlCommand(`$sqlDelete, `$con)",
 			"      `$cmd.CommandTimeout = `$timeoutSec;",
 			"      `$__ = `$cmd.ExecuteNonQuery();",
