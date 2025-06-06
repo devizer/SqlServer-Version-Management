@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.114';
+$ModuleVersion = '2.1.115';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.114`"",
+			"  ModuleVersion = `"2.1.115`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -3508,6 +3508,8 @@ $ModuleFiles = @(
 			"Export-ModuleMember -Function Invoke-LocalDB-Executable",
 			"Export-ModuleMember -Function Test-Show-LocalDb-Versions-with-Instances",
 			"Export-ModuleMember -Function Test-Create-Delete-LocalDB-Instance",
+			"",
+			"Export-ModuleMember -Function Try-Action-ForEach",
 			"",
 			"",
 			"# This works with SQLLocalDB|v11.0 instance of the latest version only",
