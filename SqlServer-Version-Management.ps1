@@ -3240,6 +3240,9 @@ function Try-Action-ForEach([string] $actionTitle, [ScriptBlock] $action, [Scrip
   $bullet=[char]8226; $arrow=[char]8594;
   foreach($inputItem in $inputCopy) {
     $theItemTitle = If ($null -eq $itemTitle) { "$inputItem" } Else { ForEach-Object -InputObject $inputItem -Process $itemTitle | Select -First 1 };
+    $index++;
+    $textCounter = "$index of $($inputCopy.Length)"
+    Write-Host "$([Environment]::NewLine)STARTING $($textCounter): $($actionTitle) for $($quot1)$($theItemTitle)$($quot2)" -ForeGroundColor Yellow
     $itemStartAt = [System.Diagnostics.Stopwatch]::StartNew()
     $GLOBAL:LASTEXITCODE=0;
     $isOk = $null;
@@ -3266,11 +3269,9 @@ function Try-Action-ForEach([string] $actionTitle, [ScriptBlock] $action, [Scrip
       $failDetails += [PSCustomObject] @{ Title = $theItemTitle; Error = $itemError};
     }
 
-    $index++;
     $eta = ($startAt.Elapsed.TotalSeconds / $index * $inputCopy.Length) - $startAt.Elapsed.TotalSeconds;
     $color = If ($isOk) { "Green" } else { "Red" }
     $status = If ($isOk) { "Success" } else { "Fail" }
-    $textCounter = "$index of $($inputCopy.Length)"
     Write-Host "$($status): $textCounter $($actionTitle) for $($quot1)$($theItemTitle)$($quot2) (ETA: $("{0:n1}" -f $eta)s)" -ForeGroundColor $color
     if ($itemError) { Write-Host "Error Message: $itemError" -ForeGroundColor Red }
     # Write-Host "ETA: $("{0:n1}" -f $eta)s"

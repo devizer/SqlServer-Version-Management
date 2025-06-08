@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.115';
+$ModuleVersion = '2.1.116';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.115`"",
+			"  ModuleVersion = `"2.1.116`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -3331,6 +3331,9 @@ $ModuleFiles = @(
 			"  `$bullet=[char]8226; `$arrow=[char]8594;",
 			"  foreach(`$inputItem in `$inputCopy) {",
 			"    `$theItemTitle = If (`$null -eq `$itemTitle) { `"`$inputItem`" } Else { ForEach-Object -InputObject `$inputItem -Process `$itemTitle | Select -First 1 };",
+			"    `$index++;",
+			"    `$textCounter = `"`$index of `$(`$inputCopy.Length)`"",
+			"    Write-Host `"`$([Environment]::NewLine)STARTING `$(`$textCounter): `$(`$actionTitle) for `$(`$quot1)`$(`$theItemTitle)`$(`$quot2)`" -ForeGroundColor Yellow",
 			"    `$itemStartAt = [System.Diagnostics.Stopwatch]::StartNew()",
 			"    `$GLOBAL:LASTEXITCODE=0;",
 			"    `$isOk = `$null;",
@@ -3357,11 +3360,9 @@ $ModuleFiles = @(
 			"      `$failDetails += [PSCustomObject] @{ Title = `$theItemTitle; Error = `$itemError};",
 			"    }",
 			"",
-			"    `$index++;",
 			"    `$eta = (`$startAt.Elapsed.TotalSeconds / `$index * `$inputCopy.Length) - `$startAt.Elapsed.TotalSeconds;",
 			"    `$color = If (`$isOk) { `"Green`" } else { `"Red`" }",
 			"    `$status = If (`$isOk) { `"Success`" } else { `"Fail`" }",
-			"    `$textCounter = `"`$index of `$(`$inputCopy.Length)`"",
 			"    Write-Host `"`$(`$status): `$textCounter `$(`$actionTitle) for `$(`$quot1)`$(`$theItemTitle)`$(`$quot2) (ETA: `$(`"{0:n1}`" -f `$eta)s)`" -ForeGroundColor `$color",
 			"    if (`$itemError) { Write-Host `"Error Message: `$itemError`" -ForeGroundColor Red }",
 			"    # Write-Host `"ETA: `$(`"{0:n1}`" -f `$eta)s`"",
