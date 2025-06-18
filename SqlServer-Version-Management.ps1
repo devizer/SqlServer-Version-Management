@@ -3039,11 +3039,11 @@ function Query-SqlServer-Version([string] $title, [string] $connectionString, <#
     try { 
       $sql = @"
 SELECT
-Cast(ISNULL(ServerProperty('ProductVersion'), '') as nvarchar) + ' ' + 
+Cast(ISNULL(ServerProperty('ProductVersion'), '') as nvarchar(222)) + ' ' + 
 (Case ServerProperty('IsLocalDB') When 1 Then 'LocalDB' Else '' End) + ' ' + 
-Cast(ISNULL(ServerProperty('Edition'), '') as nvarchar) + ' ' + 
-Cast(ISNULL(ServerProperty('ProductLevel'), '') as nvarchar) + ' ' + 
-Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar) + 
+Cast(ISNULL(ServerProperty('Edition'), '') as nvarchar(222)) + ' ' + 
+Cast(ISNULL(ServerProperty('ProductLevel'), '') as nvarchar(222)) + ' ' + 
+Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar(222)) + 
 (Case ServerProperty('IsFullTextInstalled') When 1 Then ' + Full-text' Else '' End);
 "@;
       $con = New-Object System.Data.SqlClient.SqlConnection($connectionString);

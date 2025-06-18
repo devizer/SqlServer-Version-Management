@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.116';
+$ModuleVersion = '2.1.117';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.116`"",
+			"  ModuleVersion = `"2.1.117`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -3130,11 +3130,11 @@ $ModuleFiles = @(
 			"    try { ",
 			"      `$sql = @`"",
 			"SELECT",
-			"Cast(ISNULL(ServerProperty('ProductVersion'), '') as nvarchar) + ' ' + ",
+			"Cast(ISNULL(ServerProperty('ProductVersion'), '') as nvarchar(222)) + ' ' + ",
 			"(Case ServerProperty('IsLocalDB') When 1 Then 'LocalDB' Else '' End) + ' ' + ",
-			"Cast(ISNULL(ServerProperty('Edition'), '') as nvarchar) + ' ' + ",
-			"Cast(ISNULL(ServerProperty('ProductLevel'), '') as nvarchar) + ' ' + ",
-			"Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar) + ",
+			"Cast(ISNULL(ServerProperty('Edition'), '') as nvarchar(222)) + ' ' + ",
+			"Cast(ISNULL(ServerProperty('ProductLevel'), '') as nvarchar(222)) + ' ' + ",
+			"Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar(222)) + ",
 			"(Case ServerProperty('IsFullTextInstalled') When 1 Then ' + Full-text' Else '' End);",
 			"`"@;",
 			"      `$con = New-Object System.Data.SqlClient.SqlConnection(`$connectionString);",
