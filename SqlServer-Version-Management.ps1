@@ -1761,6 +1761,13 @@ $SqlServerAlreadyUpdatedList = @(
 # Include File: [\Includes.SqlServer\$SqlServerDownloadLinks.ps1]
 $SqlServerDownloadLinks = @(
    @{
+      Version="2025"
+      LocalDB="https://archive.org/download/sql_server_2025_prerelease_developer_edition/SqlLocalDB.msi"
+      Developer=@(
+         "https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.box",
+         "https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.exe")
+   },
+   @{
       Version="2022"
       Advanced="https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SQLEXPRADV_x64_ENU.exe"
       Core="https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SQLEXPR_x64_ENU.exe"
@@ -3039,11 +3046,11 @@ function Query-SqlServer-Version([string] $title, [string] $connectionString, <#
     try { 
       $sql = @"
 SELECT
-Cast(ISNULL(ServerProperty('ProductVersion'), '') as nvarchar) + ' ' + 
+Cast(ISNULL(ServerProperty('ProductVersion'), '') as nvarchar(222)) + ' ' + 
 (Case ServerProperty('IsLocalDB') When 1 Then 'LocalDB' Else '' End) + ' ' + 
-Cast(ISNULL(ServerProperty('Edition'), '') as nvarchar) + ' ' + 
-Cast(ISNULL(ServerProperty('ProductLevel'), '') as nvarchar) + ' ' + 
-Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar) + 
+Cast(ISNULL(ServerProperty('Edition'), '') as nvarchar(222)) + ' ' + 
+Cast(ISNULL(ServerProperty('ProductLevel'), '') as nvarchar(222)) + ' ' + 
+Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar(222)) + 
 (Case ServerProperty('IsFullTextInstalled') When 1 Then ' + Full-text' Else '' End);
 "@;
       $con = New-Object System.Data.SqlClient.SqlConnection($connectionString);

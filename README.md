@@ -171,6 +171,25 @@ Instance               InstallerVersion Service              Version
 ```
 <br/>
 
+&#x1F31F; SQL Server 2025 and LocalDB 2025 are also supported
+```powershell
+@(Find-Local-SqlServers) + @(Find-LocalDb-SqlServers) | 
+     Populate-Local-SqlServer-Version | 
+     Select-Object -Property Instance, Version |
+     Format-Table -AutoSize | 
+     Out-String -Width 1234 | 
+     Out-Host
+```
+```
+Instance               Version
+--------               -------
+(local)                17.0.800.3 Enterprise Developer Edition (64-bit) CTP2.1 + Full-text
+(local)\EVAL2025       17.0.800.3 Enterprise Evaluation Edition (64-bit) CTP2.1
+(LocalDB)\MSSQLLocalDB 17.0.800.3 LocalDB Express Edition (64-bit) CTP2.1
+```
+<br/>
+
+
 &#x1F31F; List Installed SQL Server Services
 ```powershell
 Find-Local-SqlServers | 

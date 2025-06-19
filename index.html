@@ -336,13 +336,27 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb7-
 (local)\DEV_2017       14.0.1000.169    MSSQL$DEV_2017       14.0.3456.2 Developer Edition (64-bit) RTM CU31
 (local)\DEV_2019       15.0.2000.5      MSSQL$DEV_2019       15.0.4385.2 Developer Edition (64-bit) RTM CU28</code></pre>
 <p><br/></p>
-<p>🌟 List Installed SQL Server Services</p>
+<p>🌟 SQL Server 2025 and LocalDB 2025 are also supported</p>
 <div class="sourceCode" id="cb9"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Find-Local-SqlServers <span class="op">|</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Service</span> <span class="op">}</span> <span class="op">|</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Get-Service</span> <span class="op">-</span>Name <span class="va">$_</span> <span class="op">}</span> <span class="op">|</span> </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ft</span> <span class="op">-</span>AutoSize <span class="op">|</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Out-Host</span></span></code></pre></div>
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">@(</span>Find-Local-SqlServers<span class="op">)</span> <span class="op">+</span> <span class="op">@(</span>Find-LocalDb-SqlServers<span class="op">)</span> <span class="op">|</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>     Populate-Local-SqlServer-Version <span class="op">|</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Select-Object</span> <span class="op">-</span>Property Instance<span class="op">,</span> Version <span class="op">|</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Format-Table</span> <span class="op">-</span>AutoSize <span class="op">|</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-String</span> <span class="op">-</span>Width <span class="dv">1234</span> <span class="op">|</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-Host</span></span></code></pre></div>
+<pre><code>Instance               Version
+--------               -------
+(local)                17.0.800.3 Enterprise Developer Edition (64-bit) CTP2.1 + Full-text
+(local)\EVAL2025       17.0.800.3 Enterprise Evaluation Edition (64-bit) CTP2.1
+(LocalDB)\MSSQLLocalDB 17.0.800.3 LocalDB Express Edition (64-bit) CTP2.1</code></pre>
+<p><br/></p>
+<p>🌟 List Installed SQL Server Services</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Find-Local-SqlServers <span class="op">|</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Service</span> <span class="op">}</span> <span class="op">|</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Get-Service</span> <span class="op">-</span>Name <span class="va">$_</span> <span class="op">}</span> <span class="op">|</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ft</span> <span class="op">-</span>AutoSize <span class="op">|</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Out-Host</span></span></code></pre></div>
 <pre><code>Status  Name                 DisplayName
 ------  ----                 -----------
 Running MSSQL$ADV_2005_X86   SQL Server (ADV_2005_X86)
@@ -361,50 +375,50 @@ Running MSSQLSERVER          SQL Server (MSSQLSERVER)
 <p><br/></p>
 <p>🌟 Wait up to 30 seconds for the SQL Server health check to pass, and
 return its version</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Query-SqlServer-Version <span class="op">-</span>Title <span class="st">&quot;Default MS SQL SERVER&quot;</span> <span class="op">-</span>Instance <span class="st">&quot;(local)&quot;</span> <span class="op">-</span>Timeout <span class="dv">30</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Query-SqlServer-Version <span class="op">-</span>Title <span class="st">&quot;Default MS SQL SERVER&quot;</span> <span class="op">-</span>Instance <span class="st">&quot;(local)&quot;</span> <span class="op">-</span>Timeout <span class="dv">30</span></span></code></pre></div>
 <p><br/></p>
 <p>🌟 Wait up to 30 seconds for the SQL Server health check to pass, and
 return its version (on Linux)</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Query-SqlServer-Version <span class="op">-</span>Title <span class="st">&quot;SQL Server&quot;</span> `</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>      <span class="op">-</span>ConnectionString <span class="st">&quot;Data Source=localhost,1433;User ID=sa;Password=passw0rd!;Encrypt=False;&quot;</span> `</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">-</span>Timeout <span class="dv">30</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Query-SqlServer-Version <span class="op">-</span>Title <span class="st">&quot;SQL Server&quot;</span> `</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>      <span class="op">-</span>ConnectionString <span class="st">&quot;Data Source=localhost,1433;User ID=sa;Password=passw0rd!;Encrypt=False;&quot;</span> `</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">-</span>Timeout <span class="dv">30</span></span></code></pre></div>
 <p><br/></p>
 <p>🌟 Start SQL Server Instances that are currently stopped</p>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Find-Local-SqlServers <span class="op">|</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Service</span> <span class="op">}</span> <span class="op">|</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Get-Service</span> <span class="op">-</span>Name <span class="va">$_</span> <span class="op">}</span> <span class="op">|</span> </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>   <span class="op">?</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Status</span> <span class="op">-ne</span> <span class="st">&quot;Running&quot;</span> <span class="op">}</span> <span class="op">|</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Write-Host</span> <span class="st">&quot;Starting </span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span><span class="op">;</span> <span class="fu">Start-Service</span> <span class="st">&quot;</span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span> <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Find-Local-SqlServers <span class="op">|</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Service</span> <span class="op">}</span> <span class="op">|</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Get-Service</span> <span class="op">-</span>Name <span class="va">$_</span> <span class="op">}</span> <span class="op">|</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>   <span class="op">?</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Status</span> <span class="op">-ne</span> <span class="st">&quot;Running&quot;</span> <span class="op">}</span> <span class="op">|</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Write-Host</span> <span class="st">&quot;Starting </span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span><span class="op">;</span> <span class="fu">Start-Service</span> <span class="st">&quot;</span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span> <span class="op">}</span></span></code></pre></div>
 <p><br/></p>
 <p>🌟 Stop SQL Server Instances that are currently running</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Find-Local-SqlServers <span class="op">|</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Service</span> <span class="op">}</span> <span class="op">|</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Get-Service</span> <span class="op">-</span>Name <span class="va">$_</span> <span class="op">}</span> <span class="op">|</span> </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>   <span class="op">?</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Status</span> <span class="op">-ne</span> <span class="st">&quot;Stopped&quot;</span> <span class="op">}</span> <span class="op">|</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Write-Host</span> <span class="st">&quot;Stopping </span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span><span class="op">;</span> <span class="fu">Stop-Service</span> <span class="st">&quot;</span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span> <span class="op">-</span>Force <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Find-Local-SqlServers <span class="op">|</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Service</span> <span class="op">}</span> <span class="op">|</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Get-Service</span> <span class="op">-</span>Name <span class="va">$_</span> <span class="op">}</span> <span class="op">|</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>   <span class="op">?</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">Status</span> <span class="op">-ne</span> <span class="st">&quot;Stopped&quot;</span> <span class="op">}</span> <span class="op">|</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>   <span class="op">%</span> <span class="op">{</span> <span class="fu">Write-Host</span> <span class="st">&quot;Stopping </span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span><span class="op">;</span> <span class="fu">Stop-Service</span> <span class="st">&quot;</span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span> <span class="op">-</span>Force <span class="op">}</span></span></code></pre></div>
 <p><br/></p>
 <h2 id="sql-server-localdb-functions">SQL Server LocalDB functions</h2>
 <p>🌟 Install all the versions of SQL Server LocalDB:</p>
-<div class="sourceCode" id="cb15"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Setup-SqlServers <span class="st">&quot;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="st">  2022 LocalDB,</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="st">  2019 LocalDB,</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="st">  2017 LocalDB,</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="st">  2016 LocalDB,</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="st">  2014 LocalDB,</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="st">  2012 LocalDB</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Setup-SqlServers <span class="st">&quot;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="st">  2022 LocalDB,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="st">  2019 LocalDB,</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="st">  2017 LocalDB,</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="st">  2016 LocalDB,</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="st">  2014 LocalDB,</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="st">  2012 LocalDB</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span></code></pre></div>
 <p><br/></p>
 <p>🌟 List Installed SQL Server LocalDB Versions:</p>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Find-LocalDb-Versions <span class="op">|</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">ft</span> <span class="op">-</span>Property ShortVersion<span class="op">,</span> InstallerVersion <span class="op">-</span>AutoSize <span class="op">|</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-String</span> <span class="op">-</span>Width <span class="dv">1234</span> <span class="op">|</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-Host</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Find-LocalDb-Versions <span class="op">|</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">ft</span> <span class="op">-</span>Property ShortVersion<span class="op">,</span> InstallerVersion <span class="op">-</span>AutoSize <span class="op">|</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-String</span> <span class="op">-</span>Width <span class="dv">1234</span> <span class="op">|</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-Host</span></span></code></pre></div>
 <pre><code>ShortVersion InstallerVersion
 ------------ ----------------
 16.0         16.0.4175.1
@@ -415,11 +429,11 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16
 11.0         11.4.7001.0</code></pre>
 <p><br/></p>
 <p>🌟 List SQL Server LocalDB Instances and their version:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Find-LocalDb-SqlServers <span class="op">|</span> Populate-Local-SqlServer-Version <span class="op">|</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">ft</span> <span class="op">-</span>AutoSize <span class="op">|</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-String</span> <span class="op">-</span>Width <span class="dv">1234</span> <span class="op">|</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-Host</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>Find-LocalDb-SqlServers <span class="op">|</span> Populate-Local-SqlServer-Version <span class="op">|</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">ft</span> <span class="op">-</span>AutoSize <span class="op">|</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-String</span> <span class="op">-</span>Width <span class="dv">1234</span> <span class="op">|</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-Host</span></span></code></pre></div>
 <pre><code>Instance                Version
 --------                -------
 (LocalDB)\LocalDB-v11.0 11.0.7001.0 LocalDB Express Edition (64-bit) SP4
@@ -433,22 +447,22 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18
 <p><br/></p>
 <p>🌟 Create SQL Server LocalDB Instance per version using pattern
 <code>LocalDB-v{Version}</code>:</p>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span><span class="op">(</span><span class="va">$localDb</span> <span class="kw">in</span> Find-LocalDb-Versions<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">$instance</span> <span class="op">=</span> <span class="st">&quot;LocalDB-v</span><span class="op">$(</span><span class="va">$localDb</span><span class="op">.</span><span class="fu">ShortVersion</span><span class="op">)</span><span class="st">&quot;</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Write-Host</span> <span class="st">&quot;Creating Instance </span><span class="va">$instance</span><span class="st"> version </span><span class="op">$(</span><span class="va">$localDb</span><span class="op">.</span><span class="fu">ShortVersion</span><span class="op">)</span><span class="st">&quot;</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">$isCreated</span> <span class="op">=</span> Create-LocalDB-Instance `</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span>InstanceName <span class="va">$instance</span> `</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span>OptionalVersion <span class="va">$localDb</span><span class="op">.</span><span class="fu">ShortVersion</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span><span class="op">(</span><span class="va">$localDb</span> <span class="kw">in</span> Find-LocalDb-Versions<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">$instance</span> <span class="op">=</span> <span class="st">&quot;LocalDB-v</span><span class="op">$(</span><span class="va">$localDb</span><span class="op">.</span><span class="fu">ShortVersion</span><span class="op">)</span><span class="st">&quot;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Write-Host</span> <span class="st">&quot;Creating Instance </span><span class="va">$instance</span><span class="st"> version </span><span class="op">$(</span><span class="va">$localDb</span><span class="op">.</span><span class="fu">ShortVersion</span><span class="op">)</span><span class="st">&quot;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">$isCreated</span> <span class="op">=</span> Create-LocalDB-Instance `</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span>InstanceName <span class="va">$instance</span> `</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span>OptionalVersion <span class="va">$localDb</span><span class="op">.</span><span class="fu">ShortVersion</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><br/></p>
 <p>🌟 Uninstall any pre-installed LocalDB version:</p>
-<div class="sourceCode" id="cb21"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Uninstall-LocalDB-List <span class="st">&quot;*&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Uninstall-LocalDB-List <span class="st">&quot;*&quot;</span></span></code></pre></div>
 <p><br/></p>
 <p>🌟 Uninstall LocalDB 2012 and 2014 if they are installed:</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Uninstall-LocalDB-List <span class="st">&quot;2012&quot;</span><span class="op">,</span> <span class="st">&quot;2014&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Uninstall-LocalDB-List <span class="st">&quot;2012&quot;</span><span class="op">,</span> <span class="st">&quot;2014&quot;</span></span></code></pre></div>
 
 <!-- Add copy buttons -->
 <script>
