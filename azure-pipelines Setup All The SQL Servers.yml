@@ -242,13 +242,13 @@ jobs:
 
   - powershell: |
       Write-Host "CPU: $((Get-WmiObject Win32_Processor).Name), $([System.Environment]::ProcessorCount) Cores"
-
       gdr -PSProvider 'FileSystem'
+      iex ((New-Object System.Net.WebClient).DownloadString('https://devizer.github.io/SqlServer-Version-Management/SqlServer-Version-Management.ps1'))
+    retryCountOnTaskFailure: 3
     displayName: 'Bootstrap'
 
   - powershell: |
-       cd Scripts
-       powershell -f Uninstall-LocalDB.ps1
+       Uninstall-LocalDB-List "*"
     condition: contains(variables['SQL_SERVERS'], 'LocalDB')
     displayName: 'Uninstall LocalDB'
 
@@ -257,8 +257,9 @@ jobs:
        Remove-Item -Recurse -Force "$ENV:SQLSERVERS_MEDIA_FOLDER" -EA SilentlyContinue
        Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER" -EA SilentlyContinue
        Remove-Item -Recurse -Force "SQLSERVERS_SETUP_FOLDER_Alternative" -EA SilentlyContinue
-       cd Scripts
-       powershell -f Setup-SqlServers.ps1 -SqlServers "$($ENV:SQL_SERVERS)" "Collation=French_CI_AI" "Startup=Manual" "InstallTo=C:\SQL-Customized" "Password=Meaga`$tr0ng" *| tee "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\FULL-LOG.txt"
+       # cd Scripts
+       # powershell -f Setup-SqlServers.ps1 -SqlServers "$($ENV:SQL_SERVERS)" "Collation=French_CI_AI" "Startup=Manual" "InstallTo=C:\SQL-Customized" "Password=Meaga`$tr0ng" *| tee "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\FULL-LOG.txt"
+       Setup-SqlServers -SqlServers "$($ENV:SQL_SERVERS)" "Collation=French_CI_AI" "Startup=Manual" "InstallTo=C:\SQL-Customized" "Password=Meaga`$tr0ng" *| tee "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\FULL-LOG.txt"
        get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 -or $_.Name -match "browser" -or $_.DisplayName -match "browser"  } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
        # Install-Module -Force Platform-Info
     condition: succeededOrFailed()
@@ -267,8 +268,7 @@ jobs:
 
   - powershell: |
        get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
-       cd Scripts
-       powershell -f "[Test] Publish SQL Server Setup Logs.ps1" 
+       Publish-SQLServer-SetupLogs "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
        gdr -PSProvider 'FileSystem'
     condition: succeededOrFailed()
     displayName: 'Publish Setup Logs'
@@ -278,13 +278,21 @@ jobs:
          Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server Local DB\Installed Versions" -Recurse -Force -EA SilentlyContinue
        }
        
-       cd Scripts
-       & 7z.exe x LocalSqlDiscovery-net4.5.7z -oc:\Temp\ > $null
-       cd c:\Temp\LocalSqlDiscovery-net4.5
+       @(Find-Local-SqlServers) + @(Find-LocalDb-SqlServers) | 
+          Populate-Local-SqlServer-Version | 
+          Select-Object -Property Instance, Version |
+          Format-Table -AutoSize | 
+          Out-String -Width 1234 | 
+          Out-Host
+
+       # cd Scripts
+       # & 7z.exe x LocalSqlDiscovery-net4.5.7z -oc:\Temp\ > $null
+       # cd c:\Temp\LocalSqlDiscovery-net4.5
        $outputFile = "SHOW-SQL-Servers.log"
-       & .\SHOW-SQL-Servers.cmd *| tee "$outputFile"
-       $mediumVersion = Get-Content "$outputFile" | ? {$_ -match "Medium Version"} | % {$_.Split(":") | Select -Last 1}
-       $mediumVersion = "$mediumVersion".Trim()
+       # & .\SHOW-SQL-Servers.cmd *| tee "$outputFile"
+       # $mediumVersion = Get-Content "$outputFile" | ? {$_ -match "Medium Version"} | % {$_.Split(":") | Select -Last 1}
+       # $mediumVersion = "$mediumVersion".Trim()
+       $mediumVersion = (@(@(Find-Local-SqlServers) + @(Find-LocalDb-SqlServers)) | Populate-Local-SqlServer-Version | Select -First 1).Version
        $Utf8 = New-Object System.Text.UTF8Encoding $False
        $sqlDef = "{0,-33}" -f "$($ENV:SQL_SERVERS)"
        $mediumVersionFormatted = "{0,-77}" -f "$mediumVersion"
