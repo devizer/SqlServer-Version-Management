@@ -259,7 +259,7 @@ jobs:
        Remove-Item -Recurse -Force "SQLSERVERS_SETUP_FOLDER_Alternative" -EA SilentlyContinue
        # cd Scripts
        # powershell -f Setup-SqlServers.ps1 -SqlServers "$($ENV:SQL_SERVERS)" "Collation=French_CI_AI" "Startup=Manual" "InstallTo=C:\SQL-Customized" "Password=Meaga`$tr0ng" *| tee "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\FULL-LOG.txt"
-       Setup-SqlServers -SqlServers "$($ENV:SQL_SERVERS)" "Collation=French_CI_AI" "Startup=Manual" "InstallTo=C:\SQL-Customized" "Password=Meaga`$tr0ng" *| tee "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\FULL-LOG.txt"
+       Setup-SqlServers -SqlServers "$($ENV:SQL_SERVERS)" "Collation=French_CI_AI" "Startup=Automatic" "InstallTo=C:\SQL-Customized" "Password=Meaga`$tr0ng" *| tee "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\FULL-LOG.txt"
        get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 -or $_.Name -match "browser" -or $_.DisplayName -match "browser"  } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
        # Install-Module -Force Platform-Info
     condition: succeededOrFailed()
