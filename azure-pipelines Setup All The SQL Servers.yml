@@ -1,0 +1,378 @@
+schedules:
+- cron: '30 3 * * *'
+  # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml
+  displayName: 'Daily build at 3:30 AM'
+  branches:
+    include:
+    - main
+    
+    
+variables:
+  PS1_TROUBLE_SHOOT: On
+  # Short name is critical for 2017 and older
+  SQLSERVERS_MEDIA_FOLDER: 'C:\SQL-Media'
+  SQLSERVERS_SETUP_FOLDER: 'D:\SQL-Setup'
+  SQLSERVERS_SETUP_FOLDER_Alternative: 'C:\SQL-Media'
+
+trigger:
+  branches:
+    include:
+    - manual
+
+jobs:
+
+- job: Install
+  displayName: '→'
+  pool:
+    vmImage: '$(IMAGE)'
+  timeoutInMinutes: 180
+  cancelTimeoutInMinutes: 7
+  strategy:
+    maxParallel: 10
+    matrix:
+      '#01 [2025 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2025 Developer'
+      '#02 [2025 LocalDB]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2025 LocalDB'
+      '#03 [2022 Developer Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2022 Developer Update'
+      '#04 [2022 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2022 Developer'
+      '#05 [2022 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2022 Advanced Update'
+      '#06 [2022 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2022 Advanced'
+      '#07 [2022 Core Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2022 Core Update'
+      '#08 [2022 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2022 Core'
+      '#09 [2022 LocalDB]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2022 LocalDB'
+      '#10 [2019 Developer Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2019 Developer Update'
+      '#11 [2019 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2019 Developer'
+      '#12 [2019 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2019 Advanced Update'
+      '#13 [2019 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2019 Advanced'
+      '#14 [2019 Core Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2019 Core Update'
+      '#15 [2019 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2019 Core'
+      '#16 [2019 LocalDB]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2019 LocalDB'
+      '#17 [2017 Developer Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2017 Developer Update'
+      '#18 [2017 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2017 Developer'
+      '#19 [2017 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2017 Advanced Update'
+      '#20 [2017 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2017 Advanced'
+      '#21 [2017 Core Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2017 Core Update'
+      '#22 [2017 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2017 Core'
+      '#23 [2017 LocalDB]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2017 LocalDB'
+      '#24 [2016 Developer Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2016 Developer Update'
+      '#25 [2016 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2016 Developer'
+      '#26 [2016 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2016 Advanced Update'
+      '#27 [2016 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2016 Advanced'
+      '#28 [2016 Core Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2016 Core Update'
+      '#29 [2016 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2016 Core'
+      '#30 [2016 LocalDB]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2016 LocalDB'
+      '#31 [2014-x64 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2014-x64 Developer'
+      '#32 [2014-x64 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2014-x64 Advanced'
+      '#33 [2014-x64 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2014-x64 Core'
+      '#34 [2014-x64 LocalDB]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2014-x64 LocalDB'
+      '#35 [2014-x86 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2014-x86 Developer'
+      '#36 [2014-x86 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2014-x86 Advanced'
+      '#37 [2014-x86 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2014-x86 Core'
+      '#38 [2012-x64 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2012-x64 Developer'
+      '#39 [2012-x64 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2012-x64 Advanced'
+      '#40 [2012-x64 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2012-x64 Core'
+      '#41 [2012-x64 LocalDB]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2012-x64 LocalDB'
+      '#42 [2012-x86 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2012-x86 Developer'
+      '#43 [2012-x86 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2012-x86 Advanced'
+      '#44 [2012-x86 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2012-x86 Core'
+      '#45 [2008R2-x64 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x64 Developer'
+      '#46 [2008R2-x64 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x64 Advanced Update'
+      '#47 [2008R2-x64 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x64 Advanced'
+      '#48 [2008R2-x64 Core Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x64 Core Update'
+      '#49 [2008R2-x64 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x64 Core'
+      '#50 [2008R2-x86 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x86 Developer'
+      '#51 [2008R2-x86 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x86 Advanced Update'
+      '#52 [2008R2-x86 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x86 Advanced'
+      '#53 [2008R2-x86 Core Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x86 Core Update'
+      '#54 [2008R2-x86 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008R2-x86 Core'
+      '#55 [2008-x64 Developer Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x64 Developer Update'
+      '#56 [2008-x64 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x64 Developer'
+      '#57 [2008-x64 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x64 Advanced Update'
+      '#58 [2008-x64 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x64 Advanced'
+      '#59 [2008-x64 Core Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x64 Core Update'
+      '#60 [2008-x64 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x64 Core'
+      '#61 [2008-x86 Developer Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x86 Developer Update'
+      '#62 [2008-x86 Developer]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x86 Developer'
+      '#63 [2008-x86 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x86 Advanced Update'
+      '#64 [2008-x86 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x86 Advanced'
+      '#65 [2008-x86 Core Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x86 Core Update'
+      '#66 [2008-x86 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2008-x86 Core'
+      '#67 [2005-x86 Advanced Update]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2005-x86 Advanced Update'
+      '#68 [2005-x86 Advanced]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2005-x86 Advanced'
+      '#69 [2005-x86 Core]':
+             IMAGE: 'windows-2019'
+             SQL_SERVERS: '2005-x86 Core'
+
+  steps:
+
+  - powershell: |
+      Write-Host "CPU: $((Get-WmiObject Win32_Processor).Name), $([System.Environment]::ProcessorCount) Cores"
+
+      gdr -PSProvider 'FileSystem'
+    displayName: 'Bootstrap'
+
+  - powershell: |
+       cd Scripts
+       powershell -f Uninstall-LocalDB.ps1
+    condition: contains(variables['SQL_SERVERS'], 'LocalDB')
+    displayName: 'Uninstall LocalDB'
+
+  - powershell: |
+       $ENV:DEBUG_LOG_FOLDER = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
+       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_MEDIA_FOLDER" -EA SilentlyContinue
+       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER" -EA SilentlyContinue
+       Remove-Item -Recurse -Force "SQLSERVERS_SETUP_FOLDER_Alternative" -EA SilentlyContinue
+       cd Scripts
+       powershell -f Setup-SqlServers.ps1 -SqlServers "$($ENV:SQL_SERVERS)" "Collation=French_CI_AI" "Startup=Manual" "InstallTo=C:\SQL-Customized" "Password=Meaga`$tr0ng" *| tee "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\FULL-LOG.txt"
+       get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 -or $_.Name -match "browser" -or $_.DisplayName -match "browser"  } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
+       # Install-Module -Force Platform-Info
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 4
+    displayName: 'Install'
+
+  - powershell: |
+       get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
+       cd Scripts
+       powershell -f "[Test] Publish SQL Server Setup Logs.ps1" 
+       gdr -PSProvider 'FileSystem'
+    condition: succeededOrFailed()
+    displayName: 'Publish Setup Logs'
+
+  - powershell: |
+       if (-not ("$($ENV:SQL_SERVERS)" -match "LocalDB")) {
+         Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server Local DB\Installed Versions" -Recurse -Force -EA SilentlyContinue
+       }
+       
+       cd Scripts
+       & 7z.exe x LocalSqlDiscovery-net4.5.7z -oc:\Temp\ > $null
+       cd c:\Temp\LocalSqlDiscovery-net4.5
+       $outputFile = "SHOW-SQL-Servers.log"
+       & .\SHOW-SQL-Servers.cmd *| tee "$outputFile"
+       $mediumVersion = Get-Content "$outputFile" | ? {$_ -match "Medium Version"} | % {$_.Split(":") | Select -Last 1}
+       $mediumVersion = "$mediumVersion".Trim()
+       $Utf8 = New-Object System.Text.UTF8Encoding $False
+       $sqlDef = "{0,-33}" -f "$($ENV:SQL_SERVERS)"
+       $mediumVersionFormatted = "{0,-77}" -f "$mediumVersion"
+       [System.IO.File]::WriteAllLines("$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\VERSION.LOG", "| $sqlDef | $mediumVersionFormatted |", $utf8)
+       [System.IO.File]::WriteAllLines("$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Medium Version.txt", "$mediumVersion", $utf8)
+
+       $ENV:DEBUG_LOG_FOLDER = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
+       $jsonFile = "$($ENV:DEBUG_LOG_FOLDER)\SQL Setup Benchmark.json"
+       $jsonString=[System.IO.File]::ReadAllText($jsonFile)
+       $jsonObject = @($jsonString | ConvertFrom-Json) | Select -First 1
+       $jsonObject | Add-Member -MemberType NoteProperty -Name "MediumVersion" -Value $mediumVersion
+       $jsonObject | ConvertTo-Json > "$jsonFile"
+
+       
+       Get-WmiObject -class "Win32_PageFileUsage" -namespace "root\CIMV2" -computername localhost | Format-Table Caption, Name, PeakUsage, AllocatedBaseSize, CurrentUsage -AutoSize | Out-String -Width 256
+    condition: succeededOrFailed()
+    displayName: 'Show SQL Servers'
+
+  - bash: |
+      set -eu; set -o pipefail
+      d=$PWD
+      pushd "$(System.ARTIFACTSDIRECTORY)"
+      # 7z a -mx=1 -ms=on -mqs=on "Source-$(Agent.JobName).7z" "$d"
+      popd
+    condition: succeededOrFailed()
+    displayName: 'Prepare Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish'
+    inputs:
+      pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+      artifactName: '$(Agent.JobName)'
+
+
+
+
+
+
+
+
+
+
+
+
+- job: 'Combine'
+  condition: succeededOrFailed()
+  pool:
+    vmImage: 'windows-2019'
+  timeoutInMinutes: 30
+  dependsOn:
+    - Install
+
+  steps: 
+
+  - task: DownloadPipelineArtifact@2
+    condition: succeededOrFailed()
+    displayName: 'Download of all platforms to $(RAW_ARTIFACTS_DIR)'
+    inputs:
+      path: '$(SYSTEM.ARTIFACTSDIRECTORY)\All'
+      patterns: 
+        "**"
+    
+  - powershell: |
+       cd $ENV:SYSTEM_ARTIFACTSDIRECTORY
+       $reportLines = Get-ChildItem -Path "." -Filter "VERSION.LOG" -recurse -force | Sort-Object -Property FullName -Descending | % {$_.FullName} | % { 
+         $dir = [System.IO.Path]::GetDirectoryName($_)
+         $jsonFile = "$dir\SQL Setup Benchmark.json"
+         $jsonString=[System.IO.File]::ReadAllText($jsonFile)
+         $jsonObject = @($jsonString | ConvertFrom-Json) | Select -First 1
+         $secondsInstall=$jsonObject.SecondsInstall
+         $secondsDownload=$jsonObject.SecondsDownload
+         $cpu=$jsonObject.Cpu
+         $columns = [System.IO.File]::ReadAllText($_).Trim(@([char]13,[char]10)) 
+         foreach($val in $secondsDownload, $secondsInstall, ($secondsDownload + $secondsInstall), $cpu) {
+           $valFormatted = If ($val -is [ValueType]) { (new-object DateTime(0)).Add([TimeSpan]::FromSeconds($val)).ToString("mm:ss.f").PadRight(9); } else { "$val".PadRight(50) }
+           $columns += "  " + $valFormatted + " |"
+         }
+         "$columns"
+       }
+       $reportLines > FULL-REPORT.TXT
+       & 7z @("a", "-sdel", "-mx=2", "-ms=on", "-mqs=on", "-xr!FULL-REPORT.TXT", "SQL Servers Combined.7z", "*");
+    condition: succeededOrFailed()
+    displayName: 'Prepare Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish'
+    inputs:
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
+      artifactName: 'SQL Servers Combined'
