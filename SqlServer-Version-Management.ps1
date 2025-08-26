@@ -1762,10 +1762,13 @@ $SqlServerAlreadyUpdatedList = @(
 $SqlServerDownloadLinks = @(
    @{
       Version="2025"
-      LocalDB="https://archive.org/download/sql_server_2025_prerelease_developer_edition/SqlLocalDB.msi"
+      # LocalDB="https://archive.org/download/sql_server_2025_prerelease_developer_edition/SqlLocalDB.msi"
+      LocalDB="https://archive.org/download/sql_server_2025_rc0_developer_edition/SqlLocalDB.msi"
       Developer=@(
-         "https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.box",
-         "https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.exe")
+         # "https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.box",
+         # "https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.exe")
+         "https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.box",
+         "https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.exe")
    },
    @{
       Version="2022"
