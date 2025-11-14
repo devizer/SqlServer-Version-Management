@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.119';
+$ModuleVersion = '2.1.120';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.119`"",
+			"  ModuleVersion = `"2.1.120`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1854,12 +1854,14 @@ $ModuleFiles = @(
 			"   @{",
 			"      Version=`"2025`"",
 			"      # LocalDB=`"https://archive.org/download/sql_server_2025_prerelease_developer_edition/SqlLocalDB.msi`"",
-			"      LocalDB=`"https://archive.org/download/sql_server_2025_rc0_developer_edition/SqlLocalDB.msi`"",
+			"      LocalDB=`"https://archive.org/download/sql_server_2025_rc1_developer_edition/SqlLocalDB.msi`"",
 			"      Developer=@(",
 			"         # `"https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.box`",",
 			"         # `"https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.exe`")",
-			"         `"https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.box`",",
-			"         `"https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.exe`")",
+			"         # `"https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.box`",",
+			"         # `"https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.exe`")",
+			"         `"https://archive.org/download/sql_server_2025_rc1_developer_edition/SQLServer2025-x64-ENU.box`",",
+			"         `"https://archive.org/download/sql_server_2025_rc1_developer_edition/SQLServer2025-x64-ENU.exe`")",
 			"   },",
 			"   @{",
 			"      Version=`"2022`"",
