@@ -641,11 +641,21 @@ function Get-Cpu-Name-Implementation {
 }
 
 function Get-Cpu-Name {
-  [OutputType([string])] param()
+  [OutputType([string])] param([switch] $includeCoreCount)
 
   if (-not $Global:_Cpu_Name) { $Global:_Cpu_Name = "$(Get-Cpu-Name-Implementation)"; }
-  return $Global:_Cpu_Name;
+  $ret="$($Global:_Cpu_Name)"
+
+  if ($includeCoreCount) { 
+    if ("$ret".Length -gt 0) { $ret += ", " }
+    $coreCount = [System.Environment]::ProcessorCount
+    if ($coreCount -eq 1) { $ret += "1 core" } else { $ret += "$coreCount cores" }
+  }
+
+  return $ret;
 }
+
+# Get-Cpu-Name -includeCoreCount
 
 # Include File: [\Includes\Get-Folder-Size.ps1]
 function Get-Folder-Size([string] $folder) {

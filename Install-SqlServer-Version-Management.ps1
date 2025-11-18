@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.120';
+$ModuleVersion = '2.1.121';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.120`"",
+			"  ModuleVersion = `"2.1.121`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -732,11 +732,21 @@ $ModuleFiles = @(
 			"}",
 			"",
 			"function Get-Cpu-Name {",
-			"  [OutputType([string])] param()",
+			"  [OutputType([string])] param([switch] `$includeCoreCount)",
 			"",
 			"  if (-not `$Global:_Cpu_Name) { `$Global:_Cpu_Name = `"`$(Get-Cpu-Name-Implementation)`"; }",
-			"  return `$Global:_Cpu_Name;",
+			"  `$ret=`"`$(`$Global:_Cpu_Name)`"",
+			"",
+			"  if (`$includeCoreCount) { ",
+			"    if (`"`$ret`".Length -gt 0) { `$ret += `", `" }",
+			"    `$coreCount = [System.Environment]::ProcessorCount",
+			"    if (`$coreCount -eq 1) { `$ret += `"1 core`" } else { `$ret += `"`$coreCount cores`" }",
+			"  }",
+			"",
+			"  return `$ret;",
 			"}",
+			"",
+			"# Get-Cpu-Name -includeCoreCount",
 			"",
 			"# Include File: [\Includes\Get-Folder-Size.ps1]",
 			"function Get-Folder-Size([string] `$folder) {",
