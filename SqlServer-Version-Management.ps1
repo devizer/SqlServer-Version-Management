@@ -3212,7 +3212,7 @@ Param(
    $sqlServers = "$sqlServers".Replace("`r"," ").Replace("`n"," ").Trim();
    while($sqlServers.IndexOf("  ") -ge 0) { $sqlServers = $sqlServers.Replace("  "," ") }
    # lets rock
-   Say "Setting up SQL Server(s) `"$sqlServers`".$([Environment]::NewLine)Cpu is '$(Get-Cpu-Name)'. $((Get-Memory-Info).Description)"
+   Say "Setting up SQL Server(s) `"$sqlServers`".$([Environment]::NewLine)Cpu is '$(Get-Cpu-Name -IncludeCoreCount)'. $((Get-Memory-Info).Description)"
    $errors = @();
 
    $servers = Parse-SqlServers-Input $sqlServers
