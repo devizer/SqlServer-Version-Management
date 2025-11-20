@@ -141,13 +141,16 @@ tr:nth-child(even) {
   margin-left: 0.5em;
   text-decoration: none;
   color: var(--muted-text);
-  opacity: 0.6;
-  font-size: 0.8em;
+  opacity: 0.3;
+  font-size: 0.7em;
+  padding-bottom: 10px;
+  font-weight: 100;
+  font-variant-emoji: text;
 }
 
 .header-anchor:hover {
   opacity: 1;
-  text-decoration: underline;
+  text-decoration: none;
 }
 </style>
 
@@ -519,7 +522,12 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb24
       anchor.href = '#' + slug;
       anchor.className = 'header-anchor';
       anchor.setAttribute('aria-label', 'Permalink: ' + header.textContent);
-      anchor.textContent = '#';
+      anchor.textContent = '🔗';
+      // TODO: Incorrect svg colors for dark theme
+      // anchor.innerHTML = `
+      // <svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+      //   <path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path>
+      // </svg>`;
 
       /* 
       anchor.addEventListener('click', e => {
