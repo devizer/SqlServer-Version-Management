@@ -2773,7 +2773,7 @@ function Install-SQLServer {
   $options = $defaultOptions.Clone();
   # Apply $args
   $extraArguments=@();
-  # if ("$($meta.Version)" -match "2025") { $optionsOverride += "/PID=33333-00000-00000-00000-00000" } # standard developer prerelease
+  if ("$($meta.Version)" -match "2025") { $optionsOverride += "/PID=22222-00000-00000-00000-00000" } # enterprise developer prerelease
   foreach($a in $optionsOverride) {
     try { $p="$a".IndexOf("="); $k="$a".SubString(0,$p); if (($p+1) -eq "$a".Length) { $v=""; } else { $v="$a".SubString($p+1); }} catch { $k=""; $v=""; }
     $v = "$v" -replace "{InstanceName}", $instanceName;
