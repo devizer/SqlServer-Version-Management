@@ -1773,14 +1773,17 @@ $SqlServerDownloadLinks = @(
    @{
       Version="2025"
       # LocalDB="https://archive.org/download/sql_server_2025_prerelease_developer_edition/SqlLocalDB.msi"
-      LocalDB="https://archive.org/download/sql_server_2025_rc1_developer_edition/SqlLocalDB.msi"
+      # LocalDB="https://archive.org/download/sql_server_2025_rc1_developer_edition/SqlLocalDB.msi"
+      LocalDB="https://archive.org/download/sql_server_2025_localdb_rtm/SqlLocalDB.msi"
       Developer=@(
          # "https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.box",
          # "https://archive.org/download/sql_server_2025_prerelease_developer_edition/SQLServer2025-x64-ENU.exe")
          # "https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.box",
          # "https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.exe")
-         "https://archive.org/download/sql_server_2025_rc1_developer_edition/SQLServer2025-x64-ENU.box",
-         "https://archive.org/download/sql_server_2025_rc1_developer_edition/SQLServer2025-x64-ENU.exe")
+         # "https://archive.org/download/sql_server_2025_rc1_developer_edition/SQLServer2025-x64-ENU.box",
+         # "https://archive.org/download/sql_server_2025_rc1_developer_edition/SQLServer2025-x64-ENU.exe")
+         "https://download.microsoft.com/download/dea8c210-c44a-4a9d-9d80-0c81578860c5/ENU/SQLServer2025-x64-ENU.box",
+         "https://download.microsoft.com/download/dea8c210-c44a-4a9d-9d80-0c81578860c5/ENU/SQLServer2025-x64-ENU.exe")
    },
    @{
       Version="2022"
