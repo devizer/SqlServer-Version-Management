@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.123';
+$ModuleVersion = '2.1.124';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.123`"",
+			"  ModuleVersion = `"2.1.124`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -2864,7 +2864,7 @@ $ModuleFiles = @(
 			"  `$options = `$defaultOptions.Clone();",
 			"  # Apply `$args",
 			"  `$extraArguments=@();",
-			"  if (`"`$(`$meta.Version)`" -match `"2025`") { `$optionsOverride += `"/PID=33333-00000-00000-00000-00000`" } # developer prerelease",
+			"  # if (`"`$(`$meta.Version)`" -match `"2025`") { `$optionsOverride += `"/PID=33333-00000-00000-00000-00000`" } # standard developer prerelease",
 			"  foreach(`$a in `$optionsOverride) {",
 			"    try { `$p=`"`$a`".IndexOf(`"=`"); `$k=`"`$a`".SubString(0,`$p); if ((`$p+1) -eq `"`$a`".Length) { `$v=`"`"; } else { `$v=`"`$a`".SubString(`$p+1); }} catch { `$k=`"`"; `$v=`"`"; }",
 			"    `$v = `"`$v`" -replace `"{InstanceName}`", `$instanceName;",
