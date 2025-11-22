@@ -1765,7 +1765,9 @@ https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2
 $SqlServerAlreadyUpdatedList = @(
   @{ Version = "2008R2-x64"; MediaType = "Developer"; },
   @{ Version = "2008R2-x86"; MediaType = "Developer"; },
-  @{ Version = "2005-x86";   MediaType = "Core"; }
+  @{ Version = "2005-x86";   MediaType = "Core"; },
+  @{ Version = "2025";       MediaType = "Core"; },
+  @{ Version = "2025";       MediaType = "Developer"; }
 );
 
 # Include File: [\Includes.SqlServer\$SqlServerDownloadLinks.ps1]
@@ -1782,6 +1784,10 @@ $SqlServerDownloadLinks = @(
          # "https://archive.org/download/sql_server_2025_rc0_developer_edition/SQLServer2025-x64-ENU.exe")
          # "https://archive.org/download/sql_server_2025_rc1_developer_edition/SQLServer2025-x64-ENU.box",
          # "https://archive.org/download/sql_server_2025_rc1_developer_edition/SQLServer2025-x64-ENU.exe")
+         "https://download.microsoft.com/download/dea8c210-c44a-4a9d-9d80-0c81578860c5/ENU/SQLServer2025-x64-ENU.box",
+         "https://download.microsoft.com/download/dea8c210-c44a-4a9d-9d80-0c81578860c5/ENU/SQLServer2025-x64-ENU.exe")
+      Core=@(
+         # Core is the same as Developer. the difference is PIDs
          "https://download.microsoft.com/download/dea8c210-c44a-4a9d-9d80-0c81578860c5/ENU/SQLServer2025-x64-ENU.box",
          "https://download.microsoft.com/download/dea8c210-c44a-4a9d-9d80-0c81578860c5/ENU/SQLServer2025-x64-ENU.exe")
    },
@@ -2776,7 +2782,13 @@ function Install-SQLServer {
   $options = $defaultOptions.Clone();
   # Apply $args
   $extraArguments=@();
-  if ("$($meta.Version)" -match "2025") { $optionsOverride += "/PID=22222-00000-00000-00000-00000" } # enterprise developer prerelease
+  if ("$($meta.Version)" -match "2025") { 
+    if ("$($meta.MediaType)" -match "Developer") { 
+      $optionsOverride += "/PID=22222-00000-00000-00000-00000" # enterprise developer 
+    } else {
+      $optionsOverride += "/PID=11111-00000-00000-00000-00000" # express 
+    }
+  }
   foreach($a in $optionsOverride) {
     try { $p="$a".IndexOf("="); $k="$a".SubString(0,$p); if (($p+1) -eq "$a".Length) { $v=""; } else { $v="$a".SubString($p+1); }} catch { $k=""; $v=""; }
     $v = "$v" -replace "{InstanceName}", $instanceName;

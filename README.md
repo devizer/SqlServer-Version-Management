@@ -13,8 +13,8 @@ SQL Server Setup defaults:
  - sa password is 'Meaga$tr0ng'.
 
 ## Supported SQL Server version arguments:
-&#x2714;&nbsp;&nbsp; _2025 Developer_ 🡒 17.0.925.4 Enterprise Developer Edition (64-bit) RC1<br/>
-&#x2714;&nbsp;&nbsp; _2025 LocalDB_ 🡒 17.0.925.4 LocalDB Express Edition (64-bit) RC1<br/>
+&#x2714;&nbsp;&nbsp; _2025 Developer_ 🡒 17.0.1000.7 Enterprise Developer Edition (64-bit) RTM<br/>
+&#x2714;&nbsp;&nbsp; _2025 LocalDB_ 🡒 17.0.1000.7 LocalDB Express Edition (64-bit) RTM<br/>
 &#x2714;&nbsp;&nbsp; _2022 Developer Update_ 🡒 16.0.4135.4 RTM CU14 Developer Edition (64-bit)<br/>
 &#x2714;&nbsp;&nbsp; _2022 Developer_ 🡒 16.0.1000.6 RTM Developer Edition (64-bit)<br/>
 &#x2714;&nbsp;&nbsp; _2022 Advanced Update_ 🡒 16.0.4135.4 RTM CU14 Express Edition (64-bit)<br/>
@@ -185,9 +185,8 @@ Instance               InstallerVersion Service              Version
 ```
 Instance               Version
 --------               -------
-(local)                17.0.925.4 Enterprise Developer Edition (64-bit) RC1
-(local)\EVAL2025       17.0.925.4 Enterprise Evaluation Edition (64-bit) RC1
-(LocalDB)\MSSQLLocalDB 17.0.925.4 LocalDB Express Edition (64-bit) RC1
+(local)                17.0.1000.7 Enterprise Developer Edition (64-bit) RTM
+(LocalDB)\MSSQLLocalDB 17.0.1000.7 LocalDB Express Edition (64-bit) RTM
 ```
 <br/>
 
@@ -257,6 +256,7 @@ Find-Local-SqlServers |
 &#x1F31F; Install all the versions of SQL Server LocalDB:
 ```powershell
 Setup-SqlServers "
+  2025 LocalDB,
   2022 LocalDB,
   2019 LocalDB,
   2017 LocalDB,
