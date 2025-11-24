@@ -14,6 +14,7 @@ SQL Server Setup defaults:
 
 ## Supported SQL Server version arguments:
 &#x2714;&nbsp;&nbsp; _2025 Developer_ 🡒 17.0.1000.7 Enterprise Developer Edition (64-bit) RTM<br/>
+&#x2714;&nbsp;&nbsp; _2025 Core_ 🡒 17.0.1000.7 Express Edition (64-bit) RTM<br/>
 &#x2714;&nbsp;&nbsp; _2025 LocalDB_ 🡒 17.0.1000.7 LocalDB Express Edition (64-bit) RTM<br/>
 &#x2714;&nbsp;&nbsp; _2022 Developer Update_ 🡒 16.0.4135.4 RTM CU14 Developer Edition (64-bit)<br/>
 &#x2714;&nbsp;&nbsp; _2022 Developer_ 🡒 16.0.1000.6 RTM Developer Edition (64-bit)<br/>

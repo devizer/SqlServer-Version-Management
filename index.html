@@ -179,18 +179,19 @@ Administrators for SSPI,</li>
 </ul>
 <h2 id="supported-sql-server-version-arguments">Supported SQL Server
 version arguments:</h2>
-<p>✔   <em>2025 Developer</em> 🡒 17.0.925.4 Enterprise Developer Edition
-(64-bit) RC1<br/> ✔   <em>2025 LocalDB</em> 🡒 17.0.925.4 LocalDB Express
-Edition (64-bit) RC1<br/> ✔   <em>2022 Developer Update</em> 🡒
-16.0.4135.4 RTM CU14 Developer Edition (64-bit)<br/> ✔   <em>2022
-Developer</em> 🡒 16.0.1000.6 RTM Developer Edition (64-bit)<br/> ✔  
-<em>2022 Advanced Update</em> 🡒 16.0.4135.4 RTM CU14 Express Edition
-(64-bit)<br/> ✔   <em>2022 Advanced</em> 🡒 16.0.1000.6 RTM Express
-Edition (64-bit)<br/> ✔   <em>2022 Core Update</em> 🡒 16.0.4135.4 RTM
-CU14 Express Edition (64-bit)<br/> ✔   <em>2022 Core</em> 🡒 16.0.1000.6
-RTM Express Edition (64-bit)<br/> ✔   <em>2022 LocalDB</em> 🡒
-16.0.1000.6 RTM LocalDB Express Edition (64-bit)<br/> ✔   <em>2019
-Developer Update</em> 🡒 15.0.4385.2 RTM CU28 Developer Edition
+<p>✔   <em>2025 Developer</em> 🡒 17.0.1000.7 Enterprise Developer
+Edition (64-bit) RTM<br/> ✔   <em>2025 Core</em> 🡒 17.0.1000.7 Express
+Edition (64-bit) RTM<br/> ✔   <em>2025 LocalDB</em> 🡒 17.0.1000.7
+LocalDB Express Edition (64-bit) RTM<br/> ✔   <em>2022 Developer
+Update</em> 🡒 16.0.4135.4 RTM CU14 Developer Edition (64-bit)<br/> ✔  
+<em>2022 Developer</em> 🡒 16.0.1000.6 RTM Developer Edition
+(64-bit)<br/> ✔   <em>2022 Advanced Update</em> 🡒 16.0.4135.4 RTM CU14
+Express Edition (64-bit)<br/> ✔   <em>2022 Advanced</em> 🡒 16.0.1000.6
+RTM Express Edition (64-bit)<br/> ✔   <em>2022 Core Update</em> 🡒
+16.0.4135.4 RTM CU14 Express Edition (64-bit)<br/> ✔   <em>2022
+Core</em> 🡒 16.0.1000.6 RTM Express Edition (64-bit)<br/> ✔   <em>2022
+LocalDB</em> 🡒 16.0.1000.6 RTM LocalDB Express Edition (64-bit)<br/> ✔  
+<em>2019 Developer Update</em> 🡒 15.0.4385.2 RTM CU28 Developer Edition
 (64-bit)<br/> ✔   <em>2019 Developer</em> 🡒 15.0.2000.5 RTM Developer
 Edition (64-bit)<br/> ✔   <em>2019 Advanced Update</em> 🡒 15.0.4385.2
 RTM CU28 Express Edition (64-bit)<br/> ✔   <em>2019 Advanced</em> 🡒
@@ -351,9 +352,8 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb9-
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>     <span class="fu">Out-Host</span></span></code></pre></div>
 <pre><code>Instance               Version
 --------               -------
-(local)                17.0.925.4 Enterprise Developer Edition (64-bit) RC1
-(local)\EVAL2025       17.0.925.4 Enterprise Evaluation Edition (64-bit) RC1
-(LocalDB)\MSSQLLocalDB 17.0.925.4 LocalDB Express Edition (64-bit) RC1</code></pre>
+(local)                17.0.1000.7 Enterprise Developer Edition (64-bit) RTM
+(LocalDB)\MSSQLLocalDB 17.0.1000.7 LocalDB Express Edition (64-bit) RTM</code></pre>
 <p><br/></p>
 <p>🌟 List Installed SQL Server Services</p>
 <div class="sourceCode" id="cb11"><pre
@@ -410,13 +410,14 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16
 <p>🌟 Install all the versions of SQL Server LocalDB:</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Setup-SqlServers <span class="st">&quot;</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="st">  2022 LocalDB,</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="st">  2019 LocalDB,</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="st">  2017 LocalDB,</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="st">  2016 LocalDB,</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="st">  2014 LocalDB,</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="st">  2012 LocalDB</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span></code></pre></div>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="st">  2025 LocalDB,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="st">  2022 LocalDB,</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="st">  2019 LocalDB,</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="st">  2017 LocalDB,</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="st">  2016 LocalDB,</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="st">  2014 LocalDB,</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="st">  2012 LocalDB</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span></code></pre></div>
 <p><br/></p>
 <p>🌟 List Installed SQL Server LocalDB Versions:</p>
 <div class="sourceCode" id="cb18"><pre
