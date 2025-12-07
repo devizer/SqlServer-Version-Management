@@ -167,6 +167,33 @@ $VcRuntimeLinksMetadata = @(
   }
 );
 
+# Include File: [\Includes\Add-Folder-To-Path.ps1]
+function Add-Folder-To-Path([string] $folder, [string] $target = "User", [switch] $includeProcess = $true ) {
+  $thePath = [Environment]::GetEnvironmentVariable("PATH", "$target");
+  $arr = $thePath.Split(";")
+  $has = $null -ne ($arr | ? { $_ -eq $folder })
+  if ($has) {
+    Write-Host "Folder $folder already in the $($target) path"
+  }
+  else {
+    $arr += "$folder"
+    $newPath = $arr -join ";"
+    Write-Host "New $($target) Path: '$newPath'"
+    [Environment]::SetEnvironmentVariable("PATH", $newPath, "$target");
+  }
+  if (($includeProcess -eq $true) -and ($target -ne "Process")) { Add-Folder-To-Path $folder "Process" $false }
+}
+
+function Add-Folder-To-System-Path([string] $folder) {
+  Add-Folder-To-Path "$folder" "Machine"
+}
+
+function Add-Folder-To-User-Path([string] $folder) {
+  Add-Folder-To-Path "$folder" "User"
+}
+
+# Add-Folder-To-User-Path "C:\TEST-TEST-TEST" -IncludeProcess:$false
+
 # Include File: [\Includes\Append-All-Text.ps1]
 function Append-All-Text( [string]$file, [string]$text ) {
   Create-Directory-for-File $file
