@@ -2,43 +2,35 @@
 # Include File: [\SqlSetup.PS1Project\src\Includes\Synopsis.ps1]
 <#
  .Synopsis
-SQL Server Setup and Management including Developer, Express, and LocalDB editions.
+SQL Server Setup and Management including Developer, Express, and LocalDB editions. 
 The intended use of this project is for Continuous Integration (CI) scenarios, where:
-     1) SQL Server or LocalDB needs to be installed without user interaction.
-     2) SQL Server or LocalDB installation doesn't need to persist across multiple CI runs.
+ • SQL Server or LocalDB needs to be installed without user interaction.
+ • SQL Server or LocalDB installation doesn’t need to persist across multiple CI runs.
 
-By default it installs SQL Engine and full text search, adds built-in Administrators to SQL Server Administrators, and turns on TCP/IP and Named Pipe protocols. Default sa password is 'Meaga`$tr0ng'.
+SQL Server Setup defaults:
+ • Features are SQL Engine and full text search,
+ • Built-in Administrators (or localized name) are SQL Server Administrators for SSPI,
+ • TCP/IP and Named Pipe protocols are on,
+ • sa password is ‘Meaga$tr0ng’.
 
-Guide: https://github.com/devizer/Universe.SqlServerJam/tree/master/SqlServer-Version-Management
+The guide: https://devizer.github.io/SqlServer-Version-Management
 
  .Description
   - Supports Windows 7 ... Windows 11, and Windows Server 2008 R2+ ... Windows Server 2025. Windows on ARM64 is also supported.
 
  .Example
-   $errors = Setup-SqlServers -SqlServers "2022 Developer: MSSQLSERVER"
+   $errors = Setup-SqlServers -SqlServers "2025 Developer: MSSQLSERVER"
 
  .Example
-   $errors = Setup-SqlServers -SqlServers "2022 Developer: DEVELOPER2022, 2019 Developer: DEVELOPER2019"
+   $errors = Setup-SqlServers -SqlServers "2025 Developer: DEVELOPER2022, 2019 Developer: DEVELOPER2019"
 
  .Example
    # Next example installs 32 or 64 bit Sql Server 2014 depending on Windows Architecture
    $errors = Setup-SqlServers -SqlServers "2014 Developer: DEVELOPER2014"
 
  .Example
-   # Next example installs 32 or 64 bit Sql Server 2012 Express depending on Windows Architecture
-   $errors = Setup-SqlServers -SqlServers "2014 Core: SQLEXPRESS"
-
-#>
-
-<#
-Alternative Installation
-
-1) In-Process Only
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/SqlServer-Version-Management.ps1'))
-
-2) Permanent Module
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
-
+   # Next example installs 32 or 64 bit Sql Server 2016 Express depending on Windows Architecture
+   $errors = Setup-SqlServers -SqlServers "2016 Core: SQLEXPRESS"
 #>
 
 # Include Directive: [ ..\Includes\*.ps1 ]
