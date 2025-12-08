@@ -1340,6 +1340,7 @@ function Query-Download-File-Size([string] $url, [int] $waitTimeout = 5000) {
       if (-not $isOutputFileExists) { return } 
       $content = Get-Content -Path "$($tempFile).output" -Raw
       $lines = $content.Split(@([char] 13, [char] 10))
+      [System.Array]::Reverse($lines)
       foreach($line in $lines) {
         if ($line.ToLower().StartsWith("content-length:")) {
           $rawLength = $line.Substring(16)
