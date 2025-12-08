@@ -288,7 +288,7 @@ function Download-And-Install-Specific-VC-Runtime([string] $arch, [int] $version
 }
 
 # Include File: [\Includes\Download-File-FailFree-and-Cached.ps1]
-function Download-File-FailFree-and-Cached([string] $fullName, [string[]] $urlList, [string] $algorithm="SHA512") {
+function Download-File-FailFree-and-Cached([string] $fullName, [string[]] $urlList, [string] $algorithm="SHA512", [bool] $showFileSize = $false) {
   
   if ((Is-File-Not-Empty "$fullName") -and (Is-File-Not-Empty "$fullName.$algorithm")) { 
     $hashActual = Get-Smarty-FileHash "$fullName" $algorithm
@@ -298,7 +298,7 @@ function Download-File-FailFree-and-Cached([string] $fullName, [string[]] $urlLi
       return $true;
     }
   }
-  $isOk = [bool] ((Download-File-FailFree $fullName $urlList) | Select -Last 1)
+  $isOk = [bool] ((Download-File-FailFree $fullName $urlList -ShowFileSize $showFileSize) | Select -Last 1)
   if ($isOk) { 
     $hashActual = Get-Smarty-FileHash "$fullName" $algorithm
     echo "$hashActual" > "$($fullName).$algorithm"
@@ -309,10 +309,18 @@ function Download-File-FailFree-and-Cached([string] $fullName, [string[]] $urlLi
 }
 
 # Include File: [\Includes\Download-File-Managed.ps1]
-function Download-File-Managed([string] $url, [string]$outfile) {
+function Download-File-Managed([string] $url, [string]$outfile, [bool] $showFileSize = $false) {
   $dirName=[System.IO.Path]::GetDirectoryName($outfile)
   Create-Directory "$dirName";
   $okAria=$false; try { & aria2c.exe -h *| out-null; $okAria=$? } catch {}
+
+  if ($showFileSize) {
+    $urlFileLength = Query-Download-File-Size $url 6000
+    if ($urlFileLength) {
+      Write-Host "Download size is '$("{0:n0}" -f $urlFileLength)' bytes for url '$url'"
+    }
+  }
+
   if ($okAria) {
     Troubleshoot-Info "Starting download `"" -Highlight "$url" "`" using aria2c as `"" -Highlight "$outfile" "`""
     # "-k", "2M",
@@ -368,9 +376,9 @@ function Download-File-Managed([string] $url, [string]$outfile) {
   return $false
 }
 
-function Download-File-FailFree([string] $outFile, [string[]] $urlList) {
+function Download-File-FailFree([string] $outFile, [string[]] $urlList, [bool] $showFileSize = $false) {
   foreach($url in $urlList) {
-    $isOk = Download-File-Managed $url $outFile | Select -Last 1;
+    $isOk = Download-File-Managed $url $outFile -showFileSize $showFileSize | Select -Last 1;
     if ($isOk) { return $true; }
   }
   return $fasle;
@@ -1301,6 +1309,53 @@ Function Out-String-And-TrimEnd
   End { return [string]::join([System.Environment]::NewLine, $list.ToArray()).TrimEnd(@([char]13,[char]10)) }
 }
 
+# Include File: [\Includes\Query-Download-File-Size.ps1]
+function Query-Download-File-Size([string] $url, [int] $waitTimeout = 5000) {
+  if ((Get-Os-Platform) -eq "Windows") { $curlExe = "curl.exe" } Else { $curlExe = "curl" }
+
+  $okCurl=$false; try { & "$curlExe" "-h" *| out-null; $okCurl=$? } catch {}
+  if (-not $okCurl) { return }
+
+  $tempFile = Combine-Path "$(Get-PS1-Repo-Downloads-Folder)" "Temp" "$([System.Guid]::newGuid().ToString("N"))"
+  $__ = Create-Directory-for-File $tempFile
+  # write-Host "tempFile = $tempFile"
+  $arguments = @("-I", "-k", "-f", "-S", "-L", "`"$url`"")
+  try {
+      # -WorkingDirectory $workingDirectory
+      $app = Start-Process "$curlExe" -ArgumentList $arguments -PassThru -WindowStyle "Hidden" -RedirectStandardOutput "$($tempFile).output" -RedirectStandardError "$($tempFile).error"
+      # Write-Host "app.Id: $($app.Id)"
+      $isExited = [bool] ($app.WaitForExit($waitTimeout));
+      $appExitCode = $app.ExitCode
+      # Write-Host "appExitCode: $appExitCode"
+      # Write-Host "isExited = $isExited"
+      if (-not $isExited) {
+        $app.Kill()
+        return;
+      }
+
+      $isOutputFileExists = [System.IO.File]::Exists("$($tempFile).output")
+      # Write-Host "isOutputFileExists = $isOutputFileExists"
+
+
+      if (-not $isOutputFileExists) { return } 
+      $content = Get-Content -Path "$($tempFile).output" -Raw
+      $lines = $content.Split(@([char] 13, [char] 10))
+      foreach($line in $lines) {
+        if ($line.ToLower().StartsWith("content-length:")) {
+          $rawLength = $line.Substring(16)
+          [long]$length = 0
+          $isNumber = [Int64]::TryParse($rawLength, [ref]$length)
+          if ($isNumber -and ($length -gt 0)) { return $length }
+        }
+      }
+  }
+  finally {
+    $__ = @("$($tempFile).output", "$($tempFile).error") | % { Remove-Item "$_" -Force -EA SilentlyContinue }
+  }
+}
+
+# Query-Download-File-Size "https://download.microsoft.com/download/dea8c210-c44a-4a9d-9d80-0c81578860c5/ENU/SQLServer2025-x64-ENU.exe"
+
 # Include File: [\Includes\Remove-Windows-Service-If-Exists.ps1]
 function Remove-Windows-Service-If-Exists([string] $serviceName, [string] $humanName) {
   # Delete Existing?
@@ -2078,7 +2133,7 @@ function Download-2010-SQLServer-and-Extract {
   }
 
   Write-Host "Downloading media for version $version $mediaType. URL(s) is '$url'. Setup file is '$exeArchive'";
-  $isDownloadOk = Download-File-FailFree-and-Cached $exeArchive @($url)
+  $isDownloadOk = Download-File-FailFree-and-Cached $exeArchive @($url) -ShowFileSize $true
   if (-not $isDownloadOk) {
     Write-Host "Download media for version $version $mediaType failed. URL(s) is '$url'" -ForegroundColor DarkRed;
     return @{};
@@ -2159,7 +2214,7 @@ function Download-Fresh-SQLServer-and-Extract {
   foreach($nextUrl in $urlList) {
     $fileName=[System.IO.Path]::GetFileName($nextUrl); # TODO: trim /download at the end
     $fileFull = Combine-Path $mediaPath $fileName
-    $isDownloadOk = Download-File-FailFree-and-Cached $fileFull @($nextUrl)
+    $isDownloadOk = Download-File-FailFree-and-Cached $fileFull @($nextUrl) -ShowFileSize $true
     if (-not $isDownloadOk) {
       Write-Host "Download bootstrapper for version $version failed. Unable to download URL '$nextUrl' as '$fileFull'" -ForegroundColor DarkRed;
       return @{};
