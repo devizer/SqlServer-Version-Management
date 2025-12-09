@@ -639,11 +639,14 @@ function Get-Cpu-Name-Implementation {
   $platform = Get-Os-Platform
   if ($platform -eq "Windows") {
     $proc = Select-WMI-Objects "Win32_Processor" | Select -First 1;
-    return "$($proc.Name)".Trim()
+    $ret = Normalize-Cpu-Name "$($proc.Name)".Trim()
+    return $ret
   }
 
   if ($platform -eq "MacOS") {
-    return (& sysctl "-n" "machdep.cpu.brand_string" | Out-String-And-TrimEnd)
+    $ret = (& sysctl "-n" "machdep.cpu.brand_string" | Out-String-And-TrimEnd)
+    $ret = Normalize-Cpu-Name $ret
+    return $ret
   }
 
   if ($platform -eq "Linux") {
@@ -657,14 +660,22 @@ function Get-Cpu-Name-Implementation {
       );
       $ret = ($parts | where { "$_" }) -join ", "
     }
+    $ret = Normalize-Cpu-Name $ret
     return $ret
   }
 
   $ret = $null;
   try { $ret = Get-Nix-Uname-Value "-m"; } catch {}
+  $ret = Normalize-Cpu-Name $ret
   if ($ret) { return "$ret"; }
 
   return "Unknown"
+}
+
+function Normalize-Cpu-Name([string] $name) {
+  $ret = "$name".Replace("`r", " ").Replace("`n", " ").Replace("`t", " ")
+  while ($ret.IndexOf("  ") -ge 0) { $ret = "$ret".Replace("  ", " ") }
+  return $ret;
 }
 
 function Get-Cpu-Name {

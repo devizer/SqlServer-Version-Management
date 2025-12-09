@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.135';
+$ModuleVersion = '2.1.136';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.135`"",
+			"  ModuleVersion = `"2.1.136`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -738,11 +738,14 @@ $ModuleFiles = @(
 			"  `$platform = Get-Os-Platform",
 			"  if (`$platform -eq `"Windows`") {",
 			"    `$proc = Select-WMI-Objects `"Win32_Processor`" | Select -First 1;",
-			"    return `"`$(`$proc.Name)`".Trim()",
+			"    `$ret = Normalize-Cpu-Name `"`$(`$proc.Name)`".Trim()",
+			"    return `$ret",
 			"  }",
 			"",
 			"  if (`$platform -eq `"MacOS`") {",
-			"    return (& sysctl `"-n`" `"machdep.cpu.brand_string`" | Out-String-And-TrimEnd)",
+			"    `$ret = (& sysctl `"-n`" `"machdep.cpu.brand_string`" | Out-String-And-TrimEnd)",
+			"    `$ret = Normalize-Cpu-Name `$ret",
+			"    return `$ret",
 			"  }",
 			"",
 			"  if (`$platform -eq `"Linux`") {",
@@ -756,14 +759,22 @@ $ModuleFiles = @(
 			"      );",
 			"      `$ret = (`$parts | where { `"`$_`" }) -join `", `"",
 			"    }",
+			"    `$ret = Normalize-Cpu-Name `$ret",
 			"    return `$ret",
 			"  }",
 			"",
 			"  `$ret = `$null;",
 			"  try { `$ret = Get-Nix-Uname-Value `"-m`"; } catch {}",
+			"  `$ret = Normalize-Cpu-Name `$ret",
 			"  if (`$ret) { return `"`$ret`"; }",
 			"",
 			"  return `"Unknown`"",
+			"}",
+			"",
+			"function Normalize-Cpu-Name([string] `$name) {",
+			"  `$ret = `"`$name`".Replace(`"``r`", `" `").Replace(`"``n`", `" `").Replace(`"``t`", `" `")",
+			"  while (`$ret.IndexOf(`"  `") -ge 0) { `$ret = `"`$ret`".Replace(`"  `", `" `") }",
+			"  return `$ret;",
 			"}",
 			"",
 			"function Get-Cpu-Name {",
