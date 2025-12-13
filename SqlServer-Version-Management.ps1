@@ -1562,28 +1562,28 @@ function Test-Set-Property-Smarty() {
 # Include File: [\Includes\Setup-VisualStudio.ps1]
 $VisualStudio_Setup_Metadata = @{
   # 2017
-  "2017 Enterprise"    = @{ Url = "https://aka.ms/vs/15/release/vs_enterprise.exe";  TestOrder = 14 }
-  "2017 Professional" = @{ Url = "https://aka.ms/vs/15/release/vs_professional.exe"; TestOrder = 44 }
-  "2017 Community"    = @{ Url = "https://aka.ms/vs/15/release/vs_community.exe";    TestOrder = 34 }
-  "2017 Build Tools"  = @{ Url = "https://aka.ms/vs/15/release/vs_buildtools.exe";   TestOrder = 24 }
+  "2017 Enterprise"    = @{ Url = "https://aka.ms/vs/15/release/vs_enterprise.exe";  TestOrder = 14; Nickname = "Entrprs17" }
+  "2017 Professional" = @{ Url = "https://aka.ms/vs/15/release/vs_professional.exe"; TestOrder = 44; Nickname = "Pro17"     }
+  "2017 Community"    = @{ Url = "https://aka.ms/vs/15/release/vs_community.exe";    TestOrder = 34; Nickname = "Commnty17" }
+  "2017 Build Tools"  = @{ Url = "https://aka.ms/vs/15/release/vs_buildtools.exe";   TestOrder = 24; Nickname = "BTools17"  }
 
   # 2019
-  "2019 Enterprise"    = @{ Url = "https://aka.ms/vs/16/release/vs_enterprise.exe";  TestOrder = 13 }
-  "2019 Professional" = @{ Url = "https://aka.ms/vs/16/release/vs_professional.exe"; TestOrder = 44 }
-  "2019 Community"    = @{ Url = "https://aka.ms/vs/16/release/vs_community.exe";    TestOrder = 33 }
-  "2019 Build Tools"  = @{ Url = "https://aka.ms/vs/16/release/vs_buildtools.exe";   TestOrder = 23 }
+  "2019 Enterprise"    = @{ Url = "https://aka.ms/vs/16/release/vs_enterprise.exe";  TestOrder = 13; Nickname = "Entrprs19" }
+  "2019 Professional" = @{ Url = "https://aka.ms/vs/16/release/vs_professional.exe"; TestOrder = 44; Nickname = "Pro19"     }
+  "2019 Community"    = @{ Url = "https://aka.ms/vs/16/release/vs_community.exe";    TestOrder = 33; Nickname = "Commnty19" }
+  "2019 Build Tools"  = @{ Url = "https://aka.ms/vs/16/release/vs_buildtools.exe";   TestOrder = 23; Nickname = "BTools19"  }
 
   # 2022
-  "2022 Enterprise"    = @{ Url = "https://aka.ms/vs/17/release/vs_enterprise.exe";  TestOrder = 12 }
-  "2022 Professional" = @{ Url = "https://aka.ms/vs/17/release/vs_professional.exe"; TestOrder = 43 }
-  "2022 Community"    = @{ Url = "https://aka.ms/vs/17/release/vs_community.exe";    TestOrder = 32 }
-  "2022 Build Tools"  = @{ Url = "https://aka.ms/vs/17/release/vs_buildtools.exe";   TestOrder = 22 }
+  "2022 Enterprise"    = @{ Url = "https://aka.ms/vs/17/release/vs_enterprise.exe";  TestOrder = 22; Nickname = "Entrprs22" } #12
+  "2022 Professional" = @{ Url = "https://aka.ms/vs/17/release/vs_professional.exe"; TestOrder = 43; Nickname = "Pro22"     }
+  "2022 Community"    = @{ Url = "https://aka.ms/vs/17/release/vs_community.exe";    TestOrder = 32; Nickname = "Commnty22" }
+  "2022 Build Tools"  = @{ Url = "https://aka.ms/vs/17/release/vs_buildtools.exe";   TestOrder = 12; Nickname = "BTools22"  } #22 
   
   # 2026
-  "2026 Enterprise"    = @{ Url = "https://aka.ms/vs/stable/vs_enterprise.exe";  TestOrder = 11 }
-  "2026 Professional" = @{ Url = "https://aka.ms/vs/stable/vs_professional.exe"; TestOrder = 41 }
-  "2026 Community"    = @{ Url = "https://aka.ms/vs/stable/vs_community.exe";    TestOrder = 31 }
-  "2026 Build Tools"  = @{ Url = "https://aka.ms/vs/stable/vs_buildtools.exe";   TestOrder = 21 }
+  "2026 Enterprise"    = @{ Url = "https://aka.ms/vs/stable/vs_enterprise.exe";  TestOrder = 11; Nickname = "Entrprs26" }
+  "2026 Professional" = @{ Url = "https://aka.ms/vs/stable/vs_professional.exe"; TestOrder = 41; Nickname = "Pro26"     }
+  "2026 Community"    = @{ Url = "https://aka.ms/vs/stable/vs_community.exe";    TestOrder = 31; Nickname = "Commnty26" }
+  "2026 Build Tools"  = @{ Url = "https://aka.ms/vs/stable/vs_buildtools.exe";   TestOrder = 21; Nickname = "BTools26"  }
 }
 
 foreach($vsid in $VisualStudio_Setup_Metadata.Keys) {
@@ -1653,7 +1653,7 @@ function Test-Get-VisualStudio-Bootstrapper-Exe() {
   $vsidList = Get-VSID-List-In-Test-Order;
   foreach($vsid in $vsidList) {
     $exe = Get-VisualStudio-Bootstrapper-Exe -VSID $vsid
-    Write-Host "[$vsid]: '$exe'"
+    Write-Host "[$vsid]: '$exe'" -ForegroundColor Green
   }
 }
 
@@ -1661,29 +1661,65 @@ function Start-Interactive-VisualStudio-Setup([string] $VSID) {
   Start-Process (Get-VisualStudio-Bootstrapper-Exe $VSID)
 }
 
-function Build-VisualStudio-Setup-Arguments([string] $type) {
+function Format-Components-as-Args([string[]] $components) {
+  return (($components | % { "--add $_" }) -join " ")
+}
+
+<# quotes are prohibited for nockname #>
+function Build-VisualStudio-Setup-Arguments([string] $type, [string] $nickname) {
    $isQuiet = [bool] (Is-SshClient) -or (Is-BuildServer)
    $quietArg = if ($isQuiet) { "--quiet" } else { "--passive" }
+   # --nickname SHOULD NOT be used with --remove
+   $nicknameArgs = if ($nickname) { @("--nickname", "$nickname") } Else { @() }
+   # Write-Host "nickname args: [$nicknameArgs]"
    $cacheArgs = @();
    $cacheFolder = "$ENV:VS_SETUP_CACHE_FOLDER"
    if ($cacheFolder) { $cacheArgs = @("--path", "cache=`"$cacheFolder`"") }
    $removeNonEnglish = @("cs-CZ de-DE es-ES fr-FR it-IT ja-JP ko-KR pl-PL pt-BR ru-RU tr-TR zh-CN zh-TW".Split(" ") | % { "--removeProductLang $_" }) -join " "
    $addEnglish = "--addProductLang en-US"
+   # NET Core SDK: "Microsoft.NetCore.Component.SDK"
+   $commonComponents = @(
+       "Microsoft.Net.Component.3.5.DeveloperTools",
+       "Microsoft.Net.Component.4.TargetingPack",
+       "Microsoft.Net.Component.4.5.TargetingPack",
+       "Microsoft.Net.Component.4.5.1.TargetingPack",
+       "Microsoft.Net.Component.4.5.2.TargetingPack",
+       "Microsoft.Net.Component.4.6.1.TargetingPack",
+       "Microsoft.Net.Component.4.6.2.TargetingPack",
+       "Microsoft.Net.Component.4.6.TargetingPack",
+       "Microsoft.Net.Component.4.7.1.TargetingPack",
+       "Microsoft.Net.Component.4.7.2.TargetingPack",
+       "Microsoft.Net.Component.4.7.TargetingPack",
+       "Microsoft.Net.Component.4.8.TargetingPack",
+       "Microsoft.Net.Component.4.8.1.TargetingPack",
+       "Microsoft.VisualStudio.Component.IISExpress",       # Missing for Build Tools
+       "Microsoft.VisualStudio.Component.MSODBC.SQL",
+       "Microsoft.VisualStudio.Component.MSSQL.CMDLnUtils", # Missing for Build Tools
+       "Microsoft.Component.MSBuild",
+       "Microsoft.VisualStudio.Component.NuGet",
+       "Microsoft.VisualStudio.Component.SQL.SSDTBuildSku" #  SQL Server Data Tools (SSDT) and .sqlproj targets
+   );
    if ($type -eq "Basic Components") {
       # NON-BUILDTOOLS: Microsoft.VisualStudio.Workload.ManagedDesktop, Microsoft.VisualStudio.Workload.NetWeb
       # BUILDTOOLS: Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools Microsoft.VisualStudio.Workload.WebBuildTools
-      $list = "--add Microsoft.VisualStudio.Workload.ManagedDesktop --add Microsoft.VisualStudio.Workload.NetWeb --add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --add Microsoft.VisualStudio.Workload.WebBuildTools --includeRecommended --includeOptional --add Microsoft.Net.Component.4.6.TargetingPack --add Microsoft.Net.Component.4.6.1.TargetingPack --add Microsoft.Net.Component.4.6.2.TargetingPack --add Microsoft.Net.Component.4.7.TargetingPack --add Microsoft.Net.Component.4.7.1.TargetingPack --add Microsoft.Net.Component.4.7.2.TargetingPack --add Microsoft.Net.Component.4.8.TargetingPack --add Microsoft.Net.Component.4.8.1.TargetingPack --add Microsoft.Net.Component.3.5.DeveloperTools $quietArg --wait --force --norestart $addEnglish $removeNonEnglish"
+      $components = @("Microsoft.VisualStudio.Workload.ManagedDesktop", "Microsoft.VisualStudio.Workload.NetWeb", "Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools", "Microsoft.VisualStudio.Workload.WebBuildTools");
+      $components += $commonComponents;
+      $componentsArg = Format-Components-as-Args $components;
+      $list = "$componentsArg $quietArg --includeRecommended --includeOptional --wait --force --norestart $addEnglish"
       $arguments = @($list.Split(" ") | ? { "$_" -ne "" })
       $arguments += $cacheArgs
+      $arguments = $nicknameArgs + $arguments
       return $arguments;
    }
    if ($type -eq "Mini") {
-      $list = "--includeRecommended --includeOptional --add Microsoft.Net.Component.4.6.TargetingPack --add Microsoft.Net.Component.4.6.1.TargetingPack --add Microsoft.Net.Component.4.6.2.TargetingPack --add Microsoft.Net.Component.4.7.TargetingPack --add Microsoft.Net.Component.4.7.1.TargetingPack --add Microsoft.Net.Component.4.7.2.TargetingPack --add Microsoft.Net.Component.4.8.TargetingPack --add Microsoft.Net.Component.4.8.1.TargetingPack --add Microsoft.Net.Component.3.5.DeveloperTools $quietArg --wait --force --norestart  $addEnglish $removeNonEnglish"
+      $componentsArg = Format-Components-as-Args $commonComponents;
+      $list = "--includeRecommended --includeOptional $componentsArg $quietArg --wait --force --norestart $addEnglish"
       $arguments = @($list.Split(" ") | ? { "$_" -ne "" })
       $arguments += $cacheArgs
+      $arguments = $nicknameArgs + $arguments
+      # Write-Host $arguments
       return $arguments;
    }
-
 }
 
 function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
@@ -1711,9 +1747,28 @@ function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
 
     setx VS_SETUP_CACHE_FOLDER T:\VS-Cache
     $ENV:VS_SETUP_CACHE_FOLDER = "T:\VS-Cache"
+
+    # Interactive Setup
+    Setup-VisualStudio "2026 Enterprise"
+
+    # Command line msbuild, target frameworks, sqlcmd and iis express
+    Setup-VisualStudio "2026 Community" "Mini"
+
+    # IDE with Web and Managed Desktop plus "Mini"
+    Setup-VisualStudio "2026 Enterprise" "Basic Components"
+
+    # Custom workloads and components
+    Setup-VisualStudio "2026 Community" "--add Microsoft.VisualStudio.Workload.Azure --addProductLang en-US --includeRecommended --includeOptional --wait --force --passive --norestart".Split(" ")
+    See details: https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-community?
 #>
+  $exe = (Get-VisualStudio-Bootstrapper-Exe $VSID)
+  if (-not $exe) { return }
+  # $nickname = "$VSID".Replace(" ", "").ToLower(); if ($nickname.Length -gt 9) { $nickname = $nickname.Substring(0,9) }
+  $nickname = $VisualStudio_Setup_Metadata["$VSID"]["Nickname"]
+
   if ($arguments -and ($arguments.Length -eq 1)) {
-    $foundArgs = Build-VisualStudio-Setup-Arguments $arguments[0];
+    Write-Host "Installing [$vsid] as nickname = '$nickname'"
+    $foundArgs = Build-VisualStudio-Setup-Arguments $arguments[0] $nickname;
     if ($foundArgs -and ($foundArgs.Length -gt 0)) { $arguments = $foundArgs }
   }
 
@@ -1723,9 +1778,7 @@ function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
     return 
   }
 
-  $exe = (Get-VisualStudio-Bootstrapper-Exe $VSID)
-  if (-not $exe) { return }
-  Write-Host "`"$exe`" $arguments" -ForegroundColor Green
+  Write-Host "`"$exe`" $arguments" -ForegroundColor Yellow
   if ($arguments -and ($arguments.Length -gt 0)) { $__ = Start-Process $exe -ArgumentList $arguments } Else { $__ = Start-Process $exe }
   # wating for bootstrapper.exe forward control to setup.exe
   return Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)
@@ -1735,15 +1788,16 @@ function Find-VisualStudio-Installed-Products() {
   @(Get-Speedy-Software-Product-List | ? { $_.Vendor -match "Microsoft" -and $_.Name -like "Visual*" -and $_.Name -match "Studio" } | Select-Object -Property Name, Version)
 }
 
-function Test-Setup-VisualStudio() {
+function Test-Setup-VisualStudio([string] $kind = "Basic Components" <# or Mini #>) {
   # Set-ExecutionPolicy RemoteSigned; Install-Module SqlServer-Version-Management -Force -AllowClobber; if (Test-Path T:\) { setx VS_SETUP_CACHE_FOLDER T:\VS-Cache; $ENV:VS_SETUP_CACHE_FOLDER = "T:\VS-Cache" }
+  # @("$ENV:SYSTEMDRIVE\Program Files\Microsoft Visual Studio", "$ENV:SYSTEMDRIVE\Program Files (x86)\Microsoft Visual Studio") | % { New-Item -Path "$_" -ItemType Directory -Force; & "compact.exe" /c /s:"$_"; }
   $vsidList = @($VisualStudio_Setup_Metadata.Keys | % { "$_" } | Sort-Object -Descending)
   $vsidList = Get-VSID-List-In-Test-Order;
   $setupTitle = { "$_" }
   $setupAction = {
     Write-Host "EDITION: $_"; 
     $vsid = $_
-    Setup-VisualStudio $vsid @("Basic Components")
+    Setup-VisualStudio $vsid $kind
     $okStarted = Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)
     Write-Host "Setup STARTED Success? $okStarted"
     $okCompleted = Wait-For-VisualStudio-Setup-Completed -Timeout (7200*1000)
