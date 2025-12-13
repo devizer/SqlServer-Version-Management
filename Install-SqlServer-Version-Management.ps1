@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.140';
+$ModuleVersion = '2.1.141';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.140`"",
+			"  ModuleVersion = `"2.1.141`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1824,8 +1824,8 @@ $ModuleFiles = @(
 			"",
 			"  `$exe = (Get-VisualStudio-Bootstrapper-Exe `$VSID)",
 			"  if (-not `$exe) { return }",
-			"  `$__ = Start-Process `$exe -ArgumentList `$arguments",
 			"  Write-Host `"```"`$exe```" `$arguments`" -ForegroundColor Green",
+			"  if (`$arguments -and (`$arguments.Length -gt 0)) { `$__ = Start-Process `$exe -ArgumentList `$arguments } Else { `$__ = Start-Process `$exe }",
 			"  # wating for bootstrapper.exe forward control to setup.exe",
 			"  return Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)",
 			"}",

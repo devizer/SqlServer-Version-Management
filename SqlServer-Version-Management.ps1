@@ -1725,8 +1725,8 @@ function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
 
   $exe = (Get-VisualStudio-Bootstrapper-Exe $VSID)
   if (-not $exe) { return }
-  $__ = Start-Process $exe -ArgumentList $arguments
   Write-Host "`"$exe`" $arguments" -ForegroundColor Green
+  if ($arguments -and ($arguments.Length -gt 0)) { $__ = Start-Process $exe -ArgumentList $arguments } Else { $__ = Start-Process $exe }
   # wating for bootstrapper.exe forward control to setup.exe
   return Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)
 }
