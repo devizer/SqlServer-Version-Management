@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.145';
+$ModuleVersion = '2.1.146';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.145`"",
+			"  ModuleVersion = `"2.1.146`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1544,15 +1544,16 @@ $ModuleFiles = @(
 			"    if ( (-not `$isYear) -or (-not `$isEdition) ) { continue; }",
 			"    `$installationPath = `$vs.InstallationPath",
 			"    `$baseMsBuildPath = Combine-Path `$installationPath `"MSBuild\Current\Bin`"",
-			"    `$candidate_x86   = @{ Arch = `"x86`";   Path = `$baseMsBuildPath };",
-			"    `$candidate_x64   = @{ Arch = `"x64`";   Path = (Combine-Path `$baseMsBuildPath `"amd64`") };",
+			"    `$baseMsBuildPathAlt = Combine-Path `$installationPath `"MSBuild\15.0\Bin`"",
+			"    `$candidate_x86   = @( @{ Arch = `"x86`"; Path = `$baseMsBuildPath }, @{ Arch = `"x86`"; Path = `$baseMsBuildPathAlt } );",
+			"    `$candidate_x64   = @( @{ Arch = `"x64`"; Path = (Combine-Path `$baseMsBuildPath `"amd64`") }, @{ Arch = `"x64`"; Path = (Combine-Path `$baseMsBuildPathAlt `"amd64`") } );",
 			"    `$candidate_arm64 = @{ Arch = `"arm64`"; Path = (Combine-Path `$baseMsBuildPath `"arm64`") };",
 			"    if (`$arch -eq `"x86`")   { `$candidates = @(`$candidate_x86) }",
 			"    elseif (`$arch -eq `"x64`")   { `$candidates = @(`$candidate_x64) }",
 			"    elseif (`$arch -eq `"arm64`") { `$candidates = @(`$candidate_arm64) }",
 			"    else {",
 			"      if (`$currentArch -eq `"x86`") { `$candidates = @(`$candidate_x86) }",
-			"      if (`$currentArch -eq `"x64`") { `$candidates = @(`$candidate_x64, `$candidate_x86) }",
+			"      if (`$currentArch -eq `"x64`") { `$candidates = @(`$candidate_x64) + @(`$candidate_x86) }",
 			"      if (`$currentArch -eq `"arm64`") { ",
 			"        `$candidates = @(`$candidate_arm64)",
 			"        if (Is-Intel-Emulation-Available 64) { `$candidates += @(`$candidate_x64) }",

@@ -1445,15 +1445,16 @@ function Find-VisualStudio-MSBuild([string] $year = "latest", [string] $edition 
     if ( (-not $isYear) -or (-not $isEdition) ) { continue; }
     $installationPath = $vs.InstallationPath
     $baseMsBuildPath = Combine-Path $installationPath "MSBuild\Current\Bin"
-    $candidate_x86   = @{ Arch = "x86";   Path = $baseMsBuildPath };
-    $candidate_x64   = @{ Arch = "x64";   Path = (Combine-Path $baseMsBuildPath "amd64") };
+    $baseMsBuildPathAlt = Combine-Path $installationPath "MSBuild\15.0\Bin"
+    $candidate_x86   = @( @{ Arch = "x86"; Path = $baseMsBuildPath }, @{ Arch = "x86"; Path = $baseMsBuildPathAlt } );
+    $candidate_x64   = @( @{ Arch = "x64"; Path = (Combine-Path $baseMsBuildPath "amd64") }, @{ Arch = "x64"; Path = (Combine-Path $baseMsBuildPathAlt "amd64") } );
     $candidate_arm64 = @{ Arch = "arm64"; Path = (Combine-Path $baseMsBuildPath "arm64") };
     if ($arch -eq "x86")   { $candidates = @($candidate_x86) }
     elseif ($arch -eq "x64")   { $candidates = @($candidate_x64) }
     elseif ($arch -eq "arm64") { $candidates = @($candidate_arm64) }
     else {
       if ($currentArch -eq "x86") { $candidates = @($candidate_x86) }
-      if ($currentArch -eq "x64") { $candidates = @($candidate_x64, $candidate_x86) }
+      if ($currentArch -eq "x64") { $candidates = @($candidate_x64) + @($candidate_x86) }
       if ($currentArch -eq "arm64") { 
         $candidates = @($candidate_arm64)
         if (Is-Intel-Emulation-Available 64) { $candidates += @($candidate_x64) }
