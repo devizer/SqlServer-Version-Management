@@ -1435,7 +1435,56 @@ function Get-VS-Edition-Order([string] $edition) {
   if ($edition) { $o[$edition] } 
 }
 
-function Test-Query-VSWhere() {
+function Find-VisualStudio-MSBuild([string] $year = "latest", [string] $edition = "any", [string] $arch = "best" <# x86|x64|arm64|best #>) {
+  # currentArch: x86|arm64|x64
+  $currentArch = Get-CPU-Architecture-Suffix-for-Windows
+  $vsList = @(@(Query-VSWhere-as-JSON "-products", "*", "-all") | Select-Object -Property Year, Edition, Version, InstallationVersion, DisplayName, ProductId, InstallationPath)
+  foreach($vs in $vsList) {
+    $isYear = if (($vs.Year -eq $year) -or $year -eq "latest" -or (-not $year)) { $true }
+    $isEdition = if (($vs.Edition -eq $edition) -or $edition -eq "any" -or (-not $edition)) { $true }
+    if ( (-not $isYear) -or (-not $isEdition) ) { continue; }
+    $installationPath = $vs.InstallationPath
+    $baseMsBuildPath = Combine-Path $installationPath "MSBuild\Current\Bin"
+    $candidate_x86   = @{ Arch = "x86";   Path = $baseMsBuildPath };
+    $candidate_x64   = @{ Arch = "x64";   Path = (Combine-Path $baseMsBuildPath "amd64") };
+    $candidate_arm64 = @{ Arch = "arm64"; Path = (Combine-Path $baseMsBuildPath "arm64") };
+    if ($arch -eq "x86")   { $candidates = @($candidate_x86) }
+    elseif ($arch -eq "x64")   { $candidates = @($candidate_x64) }
+    elseif ($arch -eq "arm64") { $candidates = @($candidate_arm64) }
+    else {
+      if ($currentArch -eq "x86") { $candidates = @($candidate_x86) }
+      if ($currentArch -eq "x64") { $candidates = @($candidate_x64, $candidate_x86) }
+      if ($currentArch -eq "arm64") { 
+        $candidates = @($candidate_arm64)
+        if (Is-Intel-Emulation-Available 64) { $candidates += @($candidate_x64) }
+        if (Is-Intel-Emulation-Available 32) { $candidates += @($candidate_x86) }
+      }
+    }
+    foreach($candidate in $candidates) { 
+      $msbuildPath = Combine-Path ($candidate.Path) "msbuild.exe"
+      $isMsBuildExists = [System.IO.File]::Exists($msbuildPath);
+      if (-not $isMsBuildExists) { continue; }
+      return $msbuildPath
+    }
+  }
+}
+
+function Demo-Find-VisualStudio-MSBuild() { 
+  $jit = Find-VisualStudio-MSBuild
+  $archList = "best arm64 x64 x86".Split(" ")
+  $years = "2017 2019 2022 2026 latest".Split(" ")
+  $editions = "Enterprise;Professional;Community;Build Tools;any".Split(";")
+  foreach($year in $years) { foreach($edition in $editions) {
+    Write-Host "'$($year)' `"$($edition)`""
+    foreach($arch in $archList) {
+       $msbuild = Find-VisualStudio-MSBuild $year $edition $arch
+       if ($msbuild) { $msbuild = "`"$msbuild`"" }
+       Write-Host ("       {0,-6} | {1}" -f "$($arch)", $msbuild)
+    }
+  }}
+}
+
+function Demo-Query-VSWhere() {
   Say "vswhere as Text"
   Query-VSWhere-as-Text "-nologo" | Out-Host
   Say "vswhere as json"
@@ -1445,6 +1494,8 @@ function Test-Query-VSWhere() {
   Say "vswhere as json [-products * -all] plus format"
   @(Query-VSWhere-as-JSON "-products", "*", "-all") | Select-Object -Property Year, Edition, Version, InstallationVersion, DisplayName, ProductId, InstallationPath | ft -autosize | Out-Host
 }
+
+# Demo-Find-VisualStudio-MSBuild
 
 # Include File: [\Includes\Remove-Windows-Service-If-Exists.ps1]
 function Remove-Windows-Service-If-Exists([string] $serviceName, [string] $humanName) {
@@ -1562,25 +1613,25 @@ function Test-Set-Property-Smarty() {
 # Include File: [\Includes\Setup-VisualStudio.ps1]
 $VisualStudio_Setup_Metadata = @{
   # 2017
-  "2017 Enterprise"    = @{ Url = "https://aka.ms/vs/15/release/vs_enterprise.exe";  TestOrder = 14; Nickname = "Entrprs17" }
+  "2017 Enterprise"   = @{ Url = "https://aka.ms/vs/15/release/vs_enterprise.exe";  TestOrder = 14; Nickname = "Entrprs17" }
   "2017 Professional" = @{ Url = "https://aka.ms/vs/15/release/vs_professional.exe"; TestOrder = 44; Nickname = "Pro17"     }
   "2017 Community"    = @{ Url = "https://aka.ms/vs/15/release/vs_community.exe";    TestOrder = 34; Nickname = "Commnty17" }
   "2017 Build Tools"  = @{ Url = "https://aka.ms/vs/15/release/vs_buildtools.exe";   TestOrder = 24; Nickname = "BTools17"  }
 
   # 2019
-  "2019 Enterprise"    = @{ Url = "https://aka.ms/vs/16/release/vs_enterprise.exe";  TestOrder = 13; Nickname = "Entrprs19" }
+  "2019 Enterprise"   = @{ Url = "https://aka.ms/vs/16/release/vs_enterprise.exe";  TestOrder = 13; Nickname = "Entrprs19" }
   "2019 Professional" = @{ Url = "https://aka.ms/vs/16/release/vs_professional.exe"; TestOrder = 44; Nickname = "Pro19"     }
   "2019 Community"    = @{ Url = "https://aka.ms/vs/16/release/vs_community.exe";    TestOrder = 33; Nickname = "Commnty19" }
   "2019 Build Tools"  = @{ Url = "https://aka.ms/vs/16/release/vs_buildtools.exe";   TestOrder = 23; Nickname = "BTools19"  }
 
   # 2022
-  "2022 Enterprise"    = @{ Url = "https://aka.ms/vs/17/release/vs_enterprise.exe";  TestOrder = 22; Nickname = "Entrprs22" } #12
+  "2022 Enterprise"   = @{ Url = "https://aka.ms/vs/17/release/vs_enterprise.exe";  TestOrder = 22; Nickname = "Entrprs22" } #12
   "2022 Professional" = @{ Url = "https://aka.ms/vs/17/release/vs_professional.exe"; TestOrder = 43; Nickname = "Pro22"     }
   "2022 Community"    = @{ Url = "https://aka.ms/vs/17/release/vs_community.exe";    TestOrder = 32; Nickname = "Commnty22" }
   "2022 Build Tools"  = @{ Url = "https://aka.ms/vs/17/release/vs_buildtools.exe";   TestOrder = 12; Nickname = "BTools22"  } #22 
   
   # 2026
-  "2026 Enterprise"    = @{ Url = "https://aka.ms/vs/stable/vs_enterprise.exe";  TestOrder = 11; Nickname = "Entrprs26" }
+  "2026 Enterprise"   = @{ Url = "https://aka.ms/vs/stable/vs_enterprise.exe";  TestOrder = 11; Nickname = "Entrprs26" }
   "2026 Professional" = @{ Url = "https://aka.ms/vs/stable/vs_professional.exe"; TestOrder = 41; Nickname = "Pro26"     }
   "2026 Community"    = @{ Url = "https://aka.ms/vs/stable/vs_community.exe";    TestOrder = 31; Nickname = "Commnty26" }
   "2026 Build Tools"  = @{ Url = "https://aka.ms/vs/stable/vs_buildtools.exe";   TestOrder = 21; Nickname = "BTools26"  }
@@ -1697,7 +1748,7 @@ function Build-VisualStudio-Setup-Arguments([string] $type, [string] $nickname) 
        "Microsoft.VisualStudio.Component.MSSQL.CMDLnUtils", # Missing for Build Tools
        "Microsoft.Component.MSBuild",
        "Microsoft.VisualStudio.Component.NuGet",
-       "Microsoft.VisualStudio.Component.SQL.SSDTBuildSku" #  SQL Server Data Tools (SSDT) and .sqlproj targets
+       "Microsoft.VisualStudio.Component.SQL.SSDTBuildSku"  # SQL Server Data Tools (SSDT) and .sqlproj targets
    );
    if ($type -eq "Basic Components") {
       # NON-BUILDTOOLS: Microsoft.VisualStudio.Workload.ManagedDesktop, Microsoft.VisualStudio.Workload.NetWeb
@@ -1705,7 +1756,7 @@ function Build-VisualStudio-Setup-Arguments([string] $type, [string] $nickname) 
       $components = @("Microsoft.VisualStudio.Workload.ManagedDesktop", "Microsoft.VisualStudio.Workload.NetWeb", "Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools", "Microsoft.VisualStudio.Workload.WebBuildTools");
       $components += $commonComponents;
       $componentsArg = Format-Components-as-Args $components;
-      $list = "$componentsArg $quietArg --includeRecommended --includeOptional --wait --force --norestart $addEnglish"
+      $list = "$componentsArg $quietArg --includeRecommended --includeOptional --wait --force --norestart $addEnglish $removeNonEnglish"
       $arguments = @($list.Split(" ") | ? { "$_" -ne "" })
       $arguments += $cacheArgs
       $arguments = $nicknameArgs + $arguments
@@ -1713,7 +1764,7 @@ function Build-VisualStudio-Setup-Arguments([string] $type, [string] $nickname) 
    }
    if ($type -eq "Mini") {
       $componentsArg = Format-Components-as-Args $commonComponents;
-      $list = "--includeRecommended --includeOptional $componentsArg $quietArg --wait --force --norestart $addEnglish"
+      $list = "--includeRecommended --includeOptional $componentsArg $quietArg --wait --force --norestart $addEnglish $removeNonEnglish"
       $arguments = @($list.Split(" ") | ? { "$_" -ne "" })
       $arguments += $cacheArgs
       $arguments = $nicknameArgs + $arguments
@@ -1759,6 +1810,7 @@ function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
 
     # Custom workloads and components
     Setup-VisualStudio "2026 Community" "--add Microsoft.VisualStudio.Workload.Azure --addProductLang en-US --includeRecommended --includeOptional --wait --force --passive --norestart".Split(" ")
+    Setup-VisualStudio "2026 Community" "--add Microsoft.Component.MSBuild --addProductLang en-US --includeRecommended --includeOptional --wait --force --passive --norestart".Split(" ")
     See details: https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-community?
 #>
   $exe = (Get-VisualStudio-Bootstrapper-Exe $VSID)
