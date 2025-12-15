@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.152';
+$ModuleVersion = '2.1.154';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.152`"",
+			"  ModuleVersion = `"2.1.154`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1586,7 +1586,7 @@ $ModuleFiles = @(
 			"  }}",
 			"}",
 			"",
-			"function Demo-Query-VSWhere()) {",
+			"function Demo-Query-VSWhere() {",
 			"  Say `"vswhere as Text`"",
 			"  Query-VSWhere-as-Text `"-nologo`" | Out-Host",
 			"  Say `"vswhere as json`"",

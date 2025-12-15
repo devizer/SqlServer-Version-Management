@@ -1487,7 +1487,7 @@ function Demo-Find-VisualStudio-MSBuild([bool] $allowPrerelease) {
   }}
 }
 
-function Demo-Query-VSWhere()) {
+function Demo-Query-VSWhere() {
   Say "vswhere as Text"
   Query-VSWhere-as-Text "-nologo" | Out-Host
   Say "vswhere as json"
