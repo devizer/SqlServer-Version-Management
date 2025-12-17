@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.154';
+$ModuleVersion = '2.1.155';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.154`"",
+			"  ModuleVersion = `"2.1.155`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1949,6 +1949,10 @@ $ModuleFiles = @(
 			"  # @(`"`$ENV:SYSTEMDRIVE\Program Files\Microsoft Visual Studio`", `"`$ENV:SYSTEMDRIVE\Program Files (x86)\Microsoft Visual Studio`") | % { New-Item -Path `"`$_`" -ItemType Directory -Force; & `"compact.exe`" /c /s:`"`$_`"; }",
 			"  `$vsidList = @(`$VisualStudio_Setup_Metadata.Keys | % { `"`$_`" } | Sort-Object -Descending)",
 			"  `$vsidList = Get-VSID-List-In-Test-Order;",
+			"  if ((Get-CPU-Architecture-Suffix-for-Windows) -eq `"x86`") {",
+			"    # Remove 2022 and 2026 except Built Tools on 32-bit x86 Windows",
+			"    `$vsidList = @(`$vsidList | ? { (`$_ -match `"2017`") -or  (`$_ -match `"2019`") -or (`$_ -match `"Build Tools`")} )",
+			"  }",
 			"  `$setupTitle = { `"`$_`" }",
 			"  `$setupAction = {",
 			"    Write-Host `"EDITION: `$_`"; ",

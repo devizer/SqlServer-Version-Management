@@ -1850,6 +1850,10 @@ function Test-Setup-VisualStudio([string] $kind = "Basic Components" <# or Mini 
   # @("$ENV:SYSTEMDRIVE\Program Files\Microsoft Visual Studio", "$ENV:SYSTEMDRIVE\Program Files (x86)\Microsoft Visual Studio") | % { New-Item -Path "$_" -ItemType Directory -Force; & "compact.exe" /c /s:"$_"; }
   $vsidList = @($VisualStudio_Setup_Metadata.Keys | % { "$_" } | Sort-Object -Descending)
   $vsidList = Get-VSID-List-In-Test-Order;
+  if ((Get-CPU-Architecture-Suffix-for-Windows) -eq "x86") {
+    # Remove 2022 and 2026 except Built Tools on 32-bit x86 Windows
+    $vsidList = @($vsidList | ? { ($_ -match "2017") -or  ($_ -match "2019") -or ($_ -match "Build Tools")} )
+  }
   $setupTitle = { "$_" }
   $setupAction = {
     Write-Host "EDITION: $_"; 
