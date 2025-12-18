@@ -1731,7 +1731,6 @@ function Build-VisualStudio-Setup-Arguments([string] $type, [string] $nickname) 
    $cacheArgs = @();
    $cacheFolder = "$ENV:VS_SETUP_CACHE_FOLDER"
    if ($cacheFolder) { $cacheArgs = @("--path", "cache=`"$cacheFolder`"") }
-   $installFolderArgs = if ("$ENV:VS_SETUP_INSTALL_FOLDER") { @("--path", "install=`"$($ENV:VS_SETUP_INSTALL_FOLDER)`"") } Else { @() }
    $removeNonEnglish = @("cs-CZ de-DE es-ES fr-FR it-IT ja-JP ko-KR pl-PL pt-BR ru-RU tr-TR zh-CN zh-TW".Split(" ") | % { "--removeProductLang $_" }) -join " "
    $addEnglish = "--addProductLang en-US"
    # NET Core SDK: "Microsoft.NetCore.Component.SDK"
@@ -1807,6 +1806,9 @@ function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
     setx VS_SETUP_CACHE_FOLDER T:\VS-Cache
     $ENV:VS_SETUP_CACHE_FOLDER = "T:\VS-Cache"
 
+    $ENV:VS_SETUP_INSTALL_FOLDER = "T:\Micorosft Visual Studio"
+    setx VS_SETUP_INSTALL_FOLDER "T:\Micorosft Visual Studio"
+
     # Interactive Setup
     Setup-VisualStudio "2026 Enterprise"
 
@@ -1829,7 +1831,14 @@ function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
   if ($arguments -and ($arguments.Length -eq 1)) {
     Write-Host "Installing [$vsid] as nickname = '$nickname'"
     $foundArgs = Build-VisualStudio-Setup-Arguments $arguments[0] $nickname;
-    if ($foundArgs -and ($foundArgs.Length -gt 0)) { $arguments = $foundArgs }
+    if ($foundArgs -and ($foundArgs.Length -gt 0)) { 
+      $arguments = $foundArgs
+      $installFolder = "$ENV:VS_SETUP_INSTALL_FOLDER"; 
+      if ($installFolder) {
+        if ($installFolder -match "{VSID}") { $installFolder = "$installFolder".Replace("{VSID}", "$vsid") } Else { $installFolder = Combine-Path $installFolder "$vsid" }
+        $arguments = @(@($arguments) + @("--path", "install=`"$installFolder`"") | ? { $_ })
+      }
+    }
   }
 
   $isSetupRinning = Wait-For-VisualStudio-Setup-Is-Running -Timeout 1
@@ -1839,7 +1848,8 @@ function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
   }
 
   Write-Host "`"$exe`" $arguments" -ForegroundColor Yellow
-  if ($arguments -and ($arguments.Length -gt 0)) { $__ = Start-Process $exe -ArgumentList $arguments } Else { $__ = Start-Process $exe }
+  # Write-Host "$($arguments -join "`r`n")" -ForegroundColor Magenta
+  if ($arguments -and ($arguments.Length -gt 0)) { $__ = Start-Process $exe -ArgumentList @($arguments | ? { $_ }) } Else { $__ = Start-Process $exe }
   # wating for bootstrapper.exe forward control to setup.exe
   return Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)
 }
