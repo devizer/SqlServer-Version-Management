@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.155';
+$ModuleVersion = '2.1.156';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.155`"",
+			"  ModuleVersion = `"2.1.156`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1830,6 +1830,7 @@ $ModuleFiles = @(
 			"   `$cacheArgs = @();",
 			"   `$cacheFolder = `"`$ENV:VS_SETUP_CACHE_FOLDER`"",
 			"   if (`$cacheFolder) { `$cacheArgs = @(`"--path`", `"cache=```"`$cacheFolder```"`") }",
+			"   `$installFolderArgs = if (`"`$ENV:VS_SETUP_INSTALL_FOLDER`") { @(`"--path`", `"install=```"`$(`$ENV:VS_SETUP_INSTALL_FOLDER)```"`") } Else { @() }",
 			"   `$removeNonEnglish = @(`"cs-CZ de-DE es-ES fr-FR it-IT ja-JP ko-KR pl-PL pt-BR ru-RU tr-TR zh-CN zh-TW`".Split(`" `") | % { `"--removeProductLang `$_`" }) -join `" `"",
 			"   `$addEnglish = `"--addProductLang en-US`"",
 			"   # NET Core SDK: `"Microsoft.NetCore.Component.SDK`"",
@@ -1863,6 +1864,7 @@ $ModuleFiles = @(
 			"      `$list = `"`$componentsArg `$quietArg --includeRecommended --includeOptional --wait --force --norestart `$addEnglish `$removeNonEnglish`"",
 			"      `$arguments = @(`$list.Split(`" `") | ? { `"`$_`" -ne `"`" })",
 			"      `$arguments += `$cacheArgs",
+			"      `$arguments += `$installFolderArgs",
 			"      `$arguments = `$nicknameArgs + `$arguments",
 			"      return `$arguments;",
 			"   }",
@@ -1871,6 +1873,7 @@ $ModuleFiles = @(
 			"      `$list = `"--includeRecommended --includeOptional `$componentsArg `$quietArg --wait --force --norestart `$addEnglish `$removeNonEnglish`"",
 			"      `$arguments = @(`$list.Split(`" `") | ? { `"`$_`" -ne `"`" })",
 			"      `$arguments += `$cacheArgs",
+			"      `$arguments += `$installFolderArgs",
 			"      `$arguments = `$nicknameArgs + `$arguments",
 			"      # Write-Host `$arguments",
 			"      return `$arguments;",
