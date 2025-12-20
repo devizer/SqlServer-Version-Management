@@ -1493,11 +1493,11 @@ function Demo-Query-VSWhere() {
   Say "vswhere as json"
   Query-VSWhere-as-JSON | Out-Host
   Say "vswhere as json [-all] plus format"
-  @(Query-VSWhere-as-JSON "-all") | Select-Object -Property Year, Edition, Version, InstallationVersion, DisplayName, ProductId, InstallationPath | ft -autosize | Out-Host
+  @(Query-VSWhere-as-JSON "-all") | Select-Object -Property Year, Edition, Version, InstallationVersion, DisplayName, ProductId, InstallationPath | ft -autosize | Out-String -Width 1234 | Out-Host
   Say "vswhere as json [-products * -all] plus format"
-  @(Query-VSWhere-as-JSON "-products", "*", "-all") | Select-Object -Property Year, Edition, Version, InstallationVersion, DisplayName, ProductId, InstallationPath | ft -autosize | Out-Host
+  @(Query-VSWhere-as-JSON "-products", "*", "-all") | Select-Object -Property Year, Edition, Version, InstallationVersion, DisplayName, ProductId, InstallationPath | ft -autosize | Out-String -Width 1234 | Out-Host
   Say "vswhere as json [-products * -all -prerelease] plus format"
-  @(Query-VSWhere-as-JSON "-products", "*", "-all", "-prerelease") | Select-Object -Property Year, Edition, Version, InstallationVersion, DisplayName, ProductId, InstallationPath | ft -autosize | Out-Host
+  @(Query-VSWhere-as-JSON "-products", "*", "-all", "-prerelease") | Select-Object -Property Year, Edition, Version, InstallationVersion, DisplayName, ProductId, InstallationPath | ft -autosize | Out-String -Width 1234 | Out-Host
 }
 
 # Demo-Find-VisualStudio-MSBuild
@@ -1876,7 +1876,7 @@ function Test-Setup-VisualStudio([string] $kind = "Basic Components" <# or Mini 
     Write-Host "Setup STARTED Success? $okStarted"
     $okCompleted = Wait-For-VisualStudio-Setup-Completed -Timeout (7200*1000)
     Write-Host "Setup FINISHED Success? $okCompleted"
-    Find-VisualStudio-Installed-Products | ft -autosize | out-host
+    Find-VisualStudio-Installed-Products | ft -autosize | Out-String -Width 1234 | out-host
   }
 
   $errors = @($vsidList | Try-Action-ForEach -ActionTitle "TEST VISUAL STUDIO SETUP" -Action $setupAction -ItemTitle $setupTitle)
