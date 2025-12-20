@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.168';
+$ModuleVersion = '2.1.169';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.168`"",
+			"  ModuleVersion = `"2.1.169`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1957,7 +1957,7 @@ $ModuleFiles = @(
 			"  @(Get-Speedy-Software-Product-List | ? { `$_.Vendor -match `"Microsoft`" -and `$_.Name -like `"Visual*`" -and `$_.Name -match `"Studio`" } | Select-Object -Property Name, Version)",
 			"}",
 			"",
-			"function Test-Setup-VisualStudio([string] `$kind = `"Basic Components`" <# or Mini #>) {",
+			"function Test-Setup-VisualStudio([string] `$kind = `"Basic Components`" <# or Mini #>, [switch] `$nocache) {",
 			"  # Set-ExecutionPolicy RemoteSigned; Install-Module SqlServer-Version-Management -Force -AllowClobber; if (Test-Path T:\) { setx VS_SETUP_CACHE_FOLDER T:\VS-Cache; `$ENV:VS_SETUP_CACHE_FOLDER = `"T:\VS-Cache`" }",
 			"  # @(`"`$ENV:SYSTEMDRIVE\Program Files\Microsoft Visual Studio`", `"`$ENV:SYSTEMDRIVE\Program Files (x86)\Microsoft Visual Studio`") | % { New-Item -Path `"`$_`" -ItemType Directory -Force; & `"compact.exe`" /c /s:`"`$_`"; }",
 			"  `$vsidList = @(`$VisualStudio_Setup_Metadata.Keys | % { `"`$_`" } | Sort-Object -Descending)",
@@ -1970,7 +1970,10 @@ $ModuleFiles = @(
 			"  `$setupAction = {",
 			"    Say `"EDITION: `$_`"; ",
 			"    `$vsid = `$_",
-			"    Setup-VisualStudio `$vsid `$kind",
+			"    `$nickname = `$VisualStudio_Setup_Metadata[`"`$VSID`"][`"Nickname`"]",
+			"    `$commandLineArgs = Build-VisualStudio-Setup-Arguments `$kind `$nickname",
+			"    if (`$nocache) { `$commandLineArgs = @(`$commandLineArgs) + `"--nocache`"}",
+			"    Setup-VisualStudio `$vsid `$commandLineArgs",
 			"    `$okStarted = Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)",
 			"    Write-Host `"Setup STARTED Success? `$okStarted`"",
 			"    `$okCompleted = Wait-For-VisualStudio-Setup-Completed -Timeout (7200*1000)",
