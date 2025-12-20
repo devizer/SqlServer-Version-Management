@@ -1869,7 +1869,7 @@ function Test-Setup-VisualStudio([string] $kind = "Basic Components" <# or Mini 
   }
   $setupTitle = { "$_" }
   $setupAction = {
-    Write-Host "EDITION: $_"; 
+    Say "EDITION: $_"; 
     $vsid = $_
     Setup-VisualStudio $vsid $kind
     $okStarted = Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)
