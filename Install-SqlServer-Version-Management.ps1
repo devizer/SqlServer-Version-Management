@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.170';
+$ModuleVersion = '2.1.171';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.170`"",
+			"  ModuleVersion = `"2.1.171`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1985,8 +1985,8 @@ $ModuleFiles = @(
 			"    `$vsid = `$_",
 			"    `$nickname = `$VisualStudio_Setup_Metadata[`"`$VSID`"][`"Nickname`"]",
 			"    `$commandLineArgs = Build-VisualStudio-Setup-Arguments `$kind `$nickname",
-			"    if (`$nocache) { `$commandLineArgs = @(`$commandLineArgs) + `"--nocache`"}",
-			"    Setup-VisualStudio `$vsid `$commandLineArgs",
+			"    if (`$nocache) { `$commandLineArgs = `$commandLineArgs + `"--nocache`"}",
+			"    Setup-VisualStudio `$vsid @(`$commandLineArgs | ? { `$_ })",
 			"    `$okStarted = Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)",
 			"    Write-Host `"Setup STARTED Success? `$okStarted`"",
 			"    `$okCompleted = Wait-For-VisualStudio-Setup-Completed -Timeout (7200*1000)",
