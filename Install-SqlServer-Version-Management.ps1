@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.169';
+$ModuleVersion = '2.1.170';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.169`"",
+			"  ModuleVersion = `"2.1.170`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1946,12 +1946,25 @@ $ModuleFiles = @(
 			"    return ",
 			"  }",
 			"",
-			"  Write-Host `"```"`$exe```" `$arguments`" -ForegroundColor Yellow",
+			"  # Write-Host `"```"`$exe```" `$arguments`" -ForegroundColor Yellow",
+			"  Write-Host `"`$(Format-Command-Line `"^`" `"`$exe`" `$arguments)`" -ForegroundColor Yellow",
 			"  # Write-Host `"`$(`$arguments -join `"``r``n`")`" -ForegroundColor Magenta",
 			"  if (`$arguments -and (`$arguments.Length -gt 0)) { `$__ = Start-Process `$exe -ArgumentList @(`$arguments | ? { `$_ }) } Else { `$__ = Start-Process `$exe }",
 			"  # wating for bootstrapper.exe forward control to setup.exe",
 			"  return Wait-For-VisualStudio-Setup-Is-Running -Timeout (5*60*1000)",
 			"}",
+			"",
+			"function Format-Command-Line([string] `$newLine, [string] `$command, [string[]] `$parts) {",
+			"  `$parts = @(`"```"`$(`$command)```"`") + (`$parts)",
+			"  `$ret = `"`"; `$len = 0;",
+			"  foreach(`$part in `$parts) {",
+			"    if (`$len -gt 180) { `$ret += `"`$(`$newLine)`$([Environment]::NewLine)    `"; `$len=4 }",
+			"    `$ret += `"`$part `"; `$len += `"`$part`".Length + 1;",
+			"  }",
+			"  return `"`$ret`".TrimEnd()",
+			"}",
+			"# Format-Command-Line `"^`" `"\xxx\yyy\cmd`" `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`", `"-aasdasdasd`", `"-dfhgfhfhg`", `"-bnmbmbmbnmbnm`"",
+			"",
 			"",
 			"function Find-VisualStudio-Installed-Products() {",
 			"  @(Get-Speedy-Software-Product-List | ? { `$_.Vendor -match `"Microsoft`" -and `$_.Name -like `"Visual*`" -and `$_.Name -match `"Studio`" } | Select-Object -Property Name, Version)",
