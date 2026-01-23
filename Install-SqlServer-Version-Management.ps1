@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.174';
+$ModuleVersion = '2.1.177';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.174`"",
+			"  ModuleVersion = `"2.1.177`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -137,14 +137,14 @@ $ModuleFiles = @(
 			" .Synopsis",
 			"SQL Server Setup and Management including Developer, Express, and LocalDB editions. ",
 			"The intended use of this project is for Continuous Integration (CI) scenarios, where:",
-			" вЂў SQL Server or LocalDB needs to be installed without user interaction.",
-			" вЂў SQL Server or LocalDB installation doesnвЂ™t need to persist across multiple CI runs.",
+			" • SQL Server or LocalDB needs to be installed without user interaction.",
+			" • SQL Server or LocalDB installation doesn’t need to persist across multiple CI runs.",
 			"",
 			"SQL Server Setup defaults:",
-			" вЂў Features are SQL Engine and full text search,",
-			" вЂў Built-in Administrators (or localized name) are SQL Server Administrators for SSPI,",
-			" вЂў TCP/IP and Named Pipe protocols are on,",
-			" вЂў sa password is вЂMeaga`$tr0ngвЂ™.",
+			" • Features are SQL Engine and full text search,",
+			" • Built-in Administrators (or localized name) are SQL Server Administrators for SSPI,",
+			" • TCP/IP and Named Pipe protocols are on,",
+			" • sa password is ‘Meaga`$tr0ng’.",
 			"",
 			"The guide: https://devizer.github.io/SqlServer-Version-Management",
 			"",
