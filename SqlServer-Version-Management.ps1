@@ -33,6 +33,28 @@ The guide: https://devizer.github.io/SqlServer-Version-Management
    $errors = Setup-SqlServers -SqlServers "2016 Core: SQLEXPRESS"
 #>
 
+# Include Directive: [ src\Includes\Import-DevOps.ps1 ]
+# Include File: [\SqlSetup.PS1Project\src\Includes\Import-DevOps.ps1]
+# This implicit call resolves conflict with bash shell scripts names
+function Import-DevOps() {
+   $ModuleName = "SqlServer-Version-Management"
+   $exception=$null;
+   $wp=$WarningPreference;
+   $WarningPreference="SilentlyContinue"
+   # Actual Powershell Version
+   try { Import-Module "$ModuleName" 3>$null; $okActual = $true; } catch { $exception = $_.Exception; }
+   if (-not $okActual) {
+     # Legacy Powershell Version
+     try { Import-Module "$ModuleName" ; $okLegacy = $true; } catch { $exception = $_.Exception; Write-Host "Warning! Import-Module $ModuleName failed$([Environment]::NewLine)$($_.Exception)" -ForegroundColor DarkRed }
+   }
+   if ($okActual -or $okLegacy) {
+     # Write-Host "Module '$ModuleTitle' Successfully imported" -ForeGroundColor Green
+   }
+   $WarningPreference=$wp;
+
+}
+# Import-DevOps; Try-And-Retry "curl should fail" { & "curl.exe" -I https://google.com2 }
+
 # Include Directive: [ ..\Includes\*.ps1 ]
 # Include File: [\Includes\$Full7zLinksMetadata.ps1]
 $Full7zLinksMetadata_onWindows = @(
@@ -542,6 +564,7 @@ function Get-Aria2c-Exe-FullPath-for-Windows([string] $arch) {
   $linkXp="https://github.com/q3aql/aria2-static-builds/releases/download/v1.19.2/aria2-1.19.2-win-xp-build1.7z"
   $linkX86="https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0-win-32bit-build1.zip"
   $linkX64="https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0-win-64bit-build1.zip"
+  $linkArm64="https://github.com/minnyres/aria2-windows-arm64/releases/download/v1.37.0/aria2_1.37.0_arm64.zip" # Not Tested
 
   if (-not $arch) { 
     $currentArch = Get-CPU-Architecture-Suffix-for-Windows;
@@ -1302,14 +1325,18 @@ function Measure-Action {
   $ErrorActionPreference = "SilentlyContinue"
   if (-not $err) {
     Write-Host "Success. " -ForeGroundColor Green -NoNewLine;
-    Write-Host "'$title' took $($msec.ToString("n0")) ms"
+    Write-Host "'$title'"  -ForeGroundColor Cyan -NoNewLine;
+    Write-Host " took $($msec.ToString("n0")) ms"
   } else {
     # Write-Host $err.GetType()
-    Write-Host "Fail. $($err.Message)" -ForeGroundColor Red -NoNewLine;
-    Write-Host " '$title' took $($msec.ToString("n0")) ms"
+    Write-Host "Fail. $($err.Message) " -ForeGroundColor Red -NoNewLine;
+    Write-Host "'$title'"  -ForeGroundColor Magenta -NoNewLine;
+    Write-Host " took $($msec.ToString("n0")) ms"
   }
   $ErrorActionPreference=$ea
 }
+
+# Measure-Action "Test OK" { }; Measure-Action "Test Error" { $x = 5 / 0 }
 
 # Include File: [\Includes\Out-String-And-TrimEnd.ps1]
 Function Out-String-And-TrimEnd
