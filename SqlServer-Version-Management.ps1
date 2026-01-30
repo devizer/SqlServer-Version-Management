@@ -347,7 +347,7 @@ function Download-File-Managed([string] $url, [string]$outfile, [bool] $showFile
     Troubleshoot-Info "Starting download `"" -Highlight "$url" "`" using aria2c as `"" -Highlight "$outfile" "`""
     # "-k", "2M",
     $startAt = [System.Diagnostics.Stopwatch]::StartNew()
-    & aria2c.exe @("--allow-overwrite=true", "--check-certificate=false", "-x", "16", "-j", "16", "-d", "$($dirName)", "-o", "$([System.IO.Path]::GetFileName($outfile))", "$url");
+    & aria2c.exe @("--allow-overwrite=true", "--check-certificate=false", "-x", "16", "-j", "16", "-d", "$($dirName)", "-o", "$([System.IO.Path]::GetFileName($outfile))", "$url") | out-null;
     if ($?) { 
       <# Write-Host "aria2 rocks ($([System.IO.Path]::GetFileName($outfile)))"; #> 
       try { $length = (new-object System.IO.FileInfo($outfile)).Length; } catch {}; $milliSeconds = $startAt.ElapsedMilliseconds;
@@ -1553,6 +1553,83 @@ function Reverse-Pipe() { $copy=@($input); for($i = $copy.Length - 1; $i -ge 0; 
 # $() | Reverse-Pipe
 # @(42) | Reverse-Pipe
 # @(1,2,3,4,"42") | Reverse-Pipe
+
+# Include File: [\Includes\Run-Remote-Script.ps1]
+function Get-FileName-by-Uri([string] $url) {
+  $uri = [uri]$url
+  $ret = $uri.Segments[-1]
+  if ($ret -eq "download" -and $uri.Segments.Count -gt 1) {
+    $ret = $uri.Segments[-2]
+    $ret="$ret".TrimEnd("/")
+  }
+  return $ret
+}
+
+function Run-Remote-Script() {
+  $pars = @($args)
+  $url=$null
+  $runner=""
+  $passthrowArgs=@()
+  for($p=0; $p -lt $pars.Length; $p++) {
+    $vType="'null'"; if ($v -ne $null) { $vType = "$($v.GetType().Name)" }
+    # Write-Host "[DEBUG ARGS] v=[$v], $vType" -ForegroundColor Yellow
+    $v = $pars[$p];
+    if (($p -le 1) -and ($v -eq "-r" -or $v -eq "--runner")) {
+      if ($p+1 -lt $pars.Length) {
+        $runner=$pars[$p+1];
+        $p++;
+        continue;
+      } Else {
+        throw "Run-Remote-Script Arguments Error: -r|--runner requires a value"
+      }
+    }
+    Else {
+      if ($url -eq $null -or -not $url) { 
+        $url=$v
+      } Else {
+        $passthrowArgs += $v
+      }
+    }
+  }
+
+
+  $fileOnly = Get-FileName-by-Uri $url
+  $folder = Combine-Path (Get-PS1-Repo-Downloads-Folder) "Scripts"
+  $fileFullName = Combine-Path $folder $fileOnly
+  $runnerParameter=""
+  if (-not $runner) {
+    if ("$fileFullName".ToLower().EndsWith(".ps1")) {
+      $runner="$([System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName)"
+      # or if (([System.IO.Path]::GetFileName($runner)) -eq "powershell.exe")
+      if ($PSVersionTable.PSEdition -and $PSVersionTable.PSEdition -eq "Desktop" -or ([System.IO.Path]::GetFileName($runner)) -eq "powershell.exe") {
+        $runnerParameter=" -f"
+      }
+    }
+    elseif ("$fileFullName".ToLower().EndsWith(".sh")) {
+      $runner="bash"
+    }
+    else {
+      $err="[Run-Remote-Script] Abort. Unable to infer runner for remote script '$url', file is '$fileFullName'"
+      Write-Line -TextRed "$err"
+      throw $err;
+    }
+  }
+  Write-Line "Invoking " -TextCyan "$runner$runnerParameter" " " -TextGreen "$url" " " -TextGreen "$passthrowArgs" 
+  # Write-Host "RUNNER: [$runner]"
+  # Write-Host "URL: [$url]"
+  # Write-Host "Arguments (Count = $($passthrowArgs.Length)): $passthrowArgs"
+  # Write-Host "Local File: $fileFullName"
+  $okDownload = Download-File-Managed "$url" "$fileFullName"
+  # Write-Host "okDownload: $okDownload"
+  if ($okDownload) {
+      $allWorld = $runner.Split(" ") + @($runnerParameter) + @($fileFullName) + $passthrowArgs;
+      $allWorld = @($allWorld | ? { "$_" })
+      & $allWorld[0] @($allWorld | Select-Object -Skip 1) | Out-Host
+      if (-not $?) {
+        Write-Line -TextRed "Run-Remote-Script FAIL: '$url'"
+      }
+  }
+}
 
 # Include File: [\Includes\Say.ps1]
 function Say { # param( [string] $message )
