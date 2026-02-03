@@ -2387,9 +2387,11 @@ https://archive.org/download/sql_server_developer_edition_legacy/SQL-Developer-2
 $SqlServerAlreadyUpdatedList = @(
   @{ Version = "2008R2-x64"; MediaType = "Developer"; },
   @{ Version = "2008R2-x86"; MediaType = "Developer"; },
-  @{ Version = "2005-x86";   MediaType = "Core"; },
+  @{ Version = "2005-x86";   MediaType = "Core"; }
+  <# 
   @{ Version = "2025";       MediaType = "Core"; },
   @{ Version = "2025";       MediaType = "Developer"; }
+  #>
 );
 
 # Include File: [\Includes.SqlServer\$SqlServerDownloadLinks.ps1]

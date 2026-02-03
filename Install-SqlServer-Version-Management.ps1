@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.181';
+$ModuleVersion = '2.1.182';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.181`"",
+			"  ModuleVersion = `"2.1.182`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -2520,9 +2520,11 @@ $ModuleFiles = @(
 			"`$SqlServerAlreadyUpdatedList = @(",
 			"  @{ Version = `"2008R2-x64`"; MediaType = `"Developer`"; },",
 			"  @{ Version = `"2008R2-x86`"; MediaType = `"Developer`"; },",
-			"  @{ Version = `"2005-x86`";   MediaType = `"Core`"; },",
+			"  @{ Version = `"2005-x86`";   MediaType = `"Core`"; }",
+			"  <# ",
 			"  @{ Version = `"2025`";       MediaType = `"Core`"; },",
 			"  @{ Version = `"2025`";       MediaType = `"Developer`"; }",
+			"  #>",
 			");",
 			"",
 			"# Include File: [\Includes.SqlServer\`$SqlServerDownloadLinks.ps1]",
