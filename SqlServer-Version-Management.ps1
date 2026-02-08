@@ -2142,7 +2142,11 @@ function Troubleshoot-Info-Prev([string] $message) {
 
 # Black DarkBlue DarkGreen DarkCyan DarkRed DarkMagenta DarkYellow Gray DarkGray Blue Green Cyan Red Magenta Yellow White
 # Include File: [\Includes\Try-And-Retry.ps1]
-function Try-And-Retry([string] $title, [ScriptBlock] $action, [int] $retryCount = 3, [int] $pauseMilliseconds = 1000) {
+function Try-And-Retry([string] $title, <# [ScriptBlock] #> $action, [int] $retryCount = 3, [int] $pauseMilliseconds = 1000) {
+  if ($action -is [string]) {
+        $action = [scriptblock]::Create($action)
+  }
+  
   for($retry=1; $retry -le $retryCount; $retry++) {
     $exitCode = 0;
     $err=$null;

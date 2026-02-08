@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.182';
+$ModuleVersion = '2.1.183';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.182`"",
+			"  ModuleVersion = `"2.1.183`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -2275,7 +2275,11 @@ $ModuleFiles = @(
 			"",
 			"# Black DarkBlue DarkGreen DarkCyan DarkRed DarkMagenta DarkYellow Gray DarkGray Blue Green Cyan Red Magenta Yellow White",
 			"# Include File: [\Includes\Try-And-Retry.ps1]",
-			"function Try-And-Retry([string] `$title, [ScriptBlock] `$action, [int] `$retryCount = 3, [int] `$pauseMilliseconds = 1000) {",
+			"function Try-And-Retry([string] `$title, <# [ScriptBlock] #> `$action, [int] `$retryCount = 3, [int] `$pauseMilliseconds = 1000) {",
+			"  if (`$action -is [string]) {",
+			"        `$action = [scriptblock]::Create(`$action)",
+			"  }",
+			"  ",
 			"  for(`$retry=1; `$retry -le `$retryCount; `$retry++) {",
 			"    `$exitCode = 0;",
 			"    `$err=`$null;",
