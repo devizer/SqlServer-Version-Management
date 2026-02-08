@@ -3904,8 +3904,11 @@ Param(
 }
 
 # Include File: [\Includes.SqlServer\Try-Action-ForEach.ps1]
-function Try-Action-ForEach([string] $actionTitle, [ScriptBlock] $action, [ScriptBlock] $itemTitle) {
+function Try-Action-ForEach([string] $actionTitle, <# [ScriptBlock] #> $action, [ScriptBlock] $itemTitle) {
   $inputCopy = @($input)
+  if ($action -is [string]) {
+        $action = [scriptblock]::Create($action)
+  }
   $startAt = [System.Diagnostics.Stopwatch]::StartNew()
   $index = 0;
   $totalErrors=0;

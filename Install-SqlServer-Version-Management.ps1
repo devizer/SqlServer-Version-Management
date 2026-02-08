@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.183';
+$ModuleVersion = '2.1.184';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.183`"",
+			"  ModuleVersion = `"2.1.184`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -4037,8 +4037,11 @@ $ModuleFiles = @(
 			"}",
 			"",
 			"# Include File: [\Includes.SqlServer\Try-Action-ForEach.ps1]",
-			"function Try-Action-ForEach([string] `$actionTitle, [ScriptBlock] `$action, [ScriptBlock] `$itemTitle) {",
+			"function Try-Action-ForEach([string] `$actionTitle, <# [ScriptBlock] #> `$action, [ScriptBlock] `$itemTitle) {",
 			"  `$inputCopy = @(`$input)",
+			"  if (`$action -is [string]) {",
+			"        `$action = [scriptblock]::Create(`$action)",
+			"  }",
 			"  `$startAt = [System.Diagnostics.Stopwatch]::StartNew()",
 			"  `$index = 0;",
 			"  `$totalErrors=0;",
