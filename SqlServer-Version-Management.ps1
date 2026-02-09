@@ -1643,9 +1643,13 @@ function Run-Remote-Script() {
   $okDownload = Download-File-Managed "$url" "$fileFullName"
   # Write-Host "okDownload: $okDownload"
   if ($okDownload) {
-      $allWorld = $runner.Split(" ") + @($runnerParameter) + @($fileFullName) + $passthrowArgs;
-      $allWorld = @($allWorld | ? { "$_" })
-      & $allWorld[0] @($allWorld | Select-Object -Skip 1) | Out-Host
+      $a=@($runnerParameter, $fileFullName) + @($passthrowArgs)
+      $a=@($a | ? { "$_" })
+      & "$runner" @($a)
+      # Incorrect version if $runner contains space
+      # $allWorld = $runner.Split(" ") + @($runnerParameter) + @($fileFullName) + $passthrowArgs;
+      # $allWorld = @($allWorld | ? { "$_" })
+      # & $allWorld[0] @($allWorld | Select-Object -Skip 1) | Out-Host
       if (-not $?) {
         Write-Line -TextRed "Run-Remote-Script FAIL: '$url'"
       }

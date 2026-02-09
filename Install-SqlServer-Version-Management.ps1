@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.185';
+$ModuleVersion = '2.1.186';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.185`"",
+			"  ModuleVersion = `"2.1.186`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1776,9 +1776,13 @@ $ModuleFiles = @(
 			"  `$okDownload = Download-File-Managed `"`$url`" `"`$fileFullName`"",
 			"  # Write-Host `"okDownload: `$okDownload`"",
 			"  if (`$okDownload) {",
-			"      `$allWorld = `$runner.Split(`" `") + @(`$runnerParameter) + @(`$fileFullName) + `$passthrowArgs;",
-			"      `$allWorld = @(`$allWorld | ? { `"`$_`" })",
-			"      & `$allWorld[0] @(`$allWorld | Select-Object -Skip 1) | Out-Host",
+			"      `$a=@(`$runnerParameter, `$fileFullName) + @(`$passthrowArgs)",
+			"      `$a=@(`$a | ? { `"`$_`" })",
+			"      & `"`$runner`" @(`$a)",
+			"      # Incorrect version if `$runner contains space",
+			"      # `$allWorld = `$runner.Split(`" `") + @(`$runnerParameter) + @(`$fileFullName) + `$passthrowArgs;",
+			"      # `$allWorld = @(`$allWorld | ? { `"`$_`" })",
+			"      # & `$allWorld[0] @(`$allWorld | Select-Object -Skip 1) | Out-Host",
 			"      if (-not `$?) {",
 			"        Write-Line -TextRed `"Run-Remote-Script FAIL: '`$url'`"",
 			"      }",
