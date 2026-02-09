@@ -631,6 +631,8 @@ function Get-Aria2c-Exe-FullPath-for-Windows([string] $arch) {
 
 # x86 (0), MIPS (1), Alpha (2), PowerPC (3), ARM (5), ia64 (6) Itanium-based systems, x64 (9), ARM64 (12)
 function Get-CPU-Architecture-Suffix-for-Windows-Implementation() {
+    $ret = Get-OS-Architecture-by-Registry
+    if ($ret) { return $ret; }
     # on multiple sockets x64
     $proc = Select-WMI-Objects "Win32_Processor";
     $a = ($proc | Select -First 1).Architecture
@@ -655,6 +657,25 @@ function Get-CPU-Architecture-Suffix-for-Windows-Implementation() {
 function Get-CPU-Architecture-Suffix-for-Windows() {
   if ($Global:CPUArchitectureSuffixforWindows -eq $null) { $Global:CPUArchitectureSuffixforWindows = Get-CPU-Architecture-Suffix-for-Windows-Implementation; }
   return $Global:CPUArchitectureSuffixforWindows
+}
+
+function Get-OS-Architecture-by-Registry {
+    $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+    $valueName = "PROCESSOR_ARCHITECTURE"
+    $rawArch = $null
+
+    try {
+        if (Test-Path $regPath) { $rawArch = (Get-ItemProperty -Path $regPath -Name $valueName -ErrorAction SilentlyContinue).$valueName }
+    } catch { $rawArch = $null }
+
+    switch ($rawArch) {
+        "AMD64"   { return "x64" }
+        "x86"     { return "x86" }
+        "ARM64"   { return "arm64" }
+        "ARM"     { return "arm" }
+        "IA64"    { return "ia64" }
+        "EM64T"   { return "x64" }
+    }
 }
 
 # Include File: [\Includes\Get-Cpu-Name.ps1]

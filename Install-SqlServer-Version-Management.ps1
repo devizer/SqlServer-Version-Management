@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.184';
+$ModuleVersion = '2.1.185';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.184`"",
+			"  ModuleVersion = `"2.1.185`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -764,6 +764,8 @@ $ModuleFiles = @(
 			"",
 			"# x86 (0), MIPS (1), Alpha (2), PowerPC (3), ARM (5), ia64 (6) Itanium-based systems, x64 (9), ARM64 (12)",
 			"function Get-CPU-Architecture-Suffix-for-Windows-Implementation() {",
+			"    `$ret = Get-OS-Architecture-by-Registry",
+			"    if (`$ret) { return `$ret; }",
 			"    # on multiple sockets x64",
 			"    `$proc = Select-WMI-Objects `"Win32_Processor`";",
 			"    `$a = (`$proc | Select -First 1).Architecture",
@@ -788,6 +790,25 @@ $ModuleFiles = @(
 			"function Get-CPU-Architecture-Suffix-for-Windows() {",
 			"  if (`$Global:CPUArchitectureSuffixforWindows -eq `$null) { `$Global:CPUArchitectureSuffixforWindows = Get-CPU-Architecture-Suffix-for-Windows-Implementation; }",
 			"  return `$Global:CPUArchitectureSuffixforWindows",
+			"}",
+			"",
+			"function Get-OS-Architecture-by-Registry {",
+			"    `$regPath = `"HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment`"",
+			"    `$valueName = `"PROCESSOR_ARCHITECTURE`"",
+			"    `$rawArch = `$null",
+			"",
+			"    try {",
+			"        if (Test-Path `$regPath) { `$rawArch = (Get-ItemProperty -Path `$regPath -Name `$valueName -ErrorAction SilentlyContinue).`$valueName }",
+			"    } catch { `$rawArch = `$null }",
+			"",
+			"    switch (`$rawArch) {",
+			"        `"AMD64`"   { return `"x64`" }",
+			"        `"x86`"     { return `"x86`" }",
+			"        `"ARM64`"   { return `"arm64`" }",
+			"        `"ARM`"     { return `"arm`" }",
+			"        `"IA64`"    { return `"ia64`" }",
+			"        `"EM64T`"   { return `"x64`" }",
+			"    }",
 			"}",
 			"",
 			"# Include File: [\Includes\Get-Cpu-Name.ps1]",
@@ -4281,6 +4302,7 @@ $ModuleFiles = @(
 			"Export-ModuleMember -Function Get-Aria2c-Exe-FullPath-for-Windows",
 			"Export-ModuleMember -Function Get-Builtin-Windows-Group-Name",
 			"Export-ModuleMember -Function Get-CPU-Architecture-Suffix-for-Windows",
+			"Export-ModuleMember -Function Get-OS-Architecture-by-Registry",
 			"Export-ModuleMember -Function Get-Cpu-Name",
 			"Export-ModuleMember -Function Get-Folder-Size",
 			"Export-ModuleMember -Function Get-Full7z-Exe-FullPath-for-Windows",
