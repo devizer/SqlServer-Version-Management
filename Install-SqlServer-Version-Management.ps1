@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.186';
+$ModuleVersion = '2.1.187';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.186`"",
+			"  ModuleVersion = `"2.1.187`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -945,18 +945,17 @@ $ModuleFiles = @(
 			"",
 			"function ExtractArchiveBy7zMini([string] `$fromArchive, [string] `$toDirectory) {",
 			"  New-Item -Path `"`$(`$toDirectory)`" -ItemType Directory -Force -EA SilentlyContinue | Out-Null",
-			"  pushd `"`$(`$toDirectory)`"",
 			"  `$mini7z = `"`$(Get-Mini7z-Exe-FullPath-for-Windows)`"",
-			"  # `"-o```"`$plainFolder```"`"",
-			"  `$commandLine=@(`"x`", `"-y`", `"```"`$fromArchive```"`")",
+			"  `$commandLine=@(`"x`", `"-y`", `"-o```"`$(`$toDirectory)```"`", `"```"`$fromArchive```"`")",
 			"  `$singleCore7z=@(); `$memInfo = Get-Memory-Info; `$procCount = ([Environment]::ProcessorCount); if (`$memInfo -and (`$memInfo.Free) -and (`$memInfo.Free -lt (640*`$procCount))) { `$singleCore7z=@(`"-mmt=1`") }",
 			"  `$commandLine += `$singleCore7z",
-			"  Troubleshoot-Info `"fromArchive: '`$fromArchive'; commandLine: '`$commandLine'`"",
+			"  Troubleshoot-Info `"7z-mini: '`$mini7z'; commandLine: '`$commandLine' ('`$fromArchive' ---> '`$toDirectory')`"",
 			"  # ok on pwsh and powersheel",
-			"  & `"`$mini7z`" @commandLine",
+			"  & `"`$mini7z`" @commandLine >`$null",
 			"  `$isExtractOk = `$?;",
 			"  return `$isExtractOk;",
 			"}",
+			"",
 			"",
 			"function ExtractArchiveByDefault7zFull([string] `$fromArchive, [string] `$toDirectory, `$extractCommand = `"x`") {",
 			"  New-Item -Path `"`$(`$toDirectory)`" -ItemType Directory -Force -EA SilentlyContinue | Out-Null",
