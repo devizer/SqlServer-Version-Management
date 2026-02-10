@@ -3714,7 +3714,7 @@ function Publish-SQLServer-SetupLogs([string] $toFolder, $compression=9) {
   if ((Get-Os-Platform) -ne "Windows") { Write-Host "Publish-SQLServer-SetupLogs() function is Windows only. Skipping."; return; }
   if ("$toFolder" -ne "") { New-Item -ItemType Directory -Path "$toFolder" -EA SilentlyContinue | out-null; }
   $folders = Find-SqlServer-SetupLogs
-  $sevenZip = Get-Full7z-Exe-FullPath-for-Windows -Version "1900"
+  $sevenZip = "$(Get-Full7z-Exe-FullPath-for-Windows -Version "1900")"
   foreach($logsFolder in $folders) {
     $archiveName=$logsFolder.Substring([System.IO.Path]::GetPathRoot($logsFolder).Length).Replace("\", ([char]8594).ToString())
     Say "Pack '$logsFolder' as `"$toFolder\$archiveName.7z`""
