@@ -813,7 +813,7 @@ function Get-Full7z-Exe-FullPath-for-Windows([string] $arch, [string] $version =
 function ExtractArchiveBy7zMini([string] $fromArchive, [string] $toDirectory) {
   New-Item -Path "$($toDirectory)" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
   $mini7z = "$(Get-Mini7z-Exe-FullPath-for-Windows)"
-  $commandLine=@("x", "-y", "-o`"$($toDirectory)`"", "`"$fromArchive`"")
+  $commandLine=@("x", "-y", "-o`"$($toDirectory)`"", "$fromArchive")
   $singleCore7z=@(); $memInfo = Get-Memory-Info; $procCount = ([Environment]::ProcessorCount); if ($memInfo -and ($memInfo.Free) -and ($memInfo.Free -lt (640*$procCount))) { $singleCore7z=@("-mmt=1") }
   $commandLine += $singleCore7z
   Troubleshoot-Info "7z-mini: '$mini7z'; commandLine: '$commandLine' ('$fromArchive' ---> '$toDirectory')"
