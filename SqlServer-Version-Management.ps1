@@ -3030,7 +3030,7 @@ UpdateLauncher C:\SQL-Downloads\SQL-2017-CU31\SQLServer2017-KB5016884-x64.exe
 
 # Include File: [\Includes.SqlServer\Enumerate-SQLServer-Downloads.ps1]
 function Enumerate-SQLServer-Downloads() {
-  $versions = "2005-x86", "2008-x86", "2008-x64", "2008R2-x86", "2008R2-x64", "2012-x86", "2012-x64", "2014-x86", "2014-x64", "2016", "2017", "2019", "2022";
+  $versions = "2005-x86", "2008-x86", "2008-x64", "2008R2-x86", "2008R2-x64", "2012-x86", "2012-x64", "2014-x86", "2014-x64", "2016", "2017", "2019", "2022", "2025";
   [array]::Reverse($versions);
   $mediaTypes = "LocalDB", "Core", "Advanced", "Developer";
   [array]::Reverse($mediaTypes);
@@ -3277,6 +3277,7 @@ function Find-SQLServer-Meta([string] $version, [string] $mediaType) {
       # In case of via manager
       # $url = IIf ($mediaType -eq "Developer") $meta.BaseDev $meta.BaseExpress
       $url = $meta["$mediaType"]
+      if (-not $url) { continue; }
       $ret["Url"] = $url;
       if (-not $isMissingUpdates) { $ret["CU"] = $meta.CU; }
       return $ret;

@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.191';
+$ModuleVersion = '2.1.193';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.191`"",
+			"  ModuleVersion = `"2.1.193`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -3163,7 +3163,7 @@ $ModuleFiles = @(
 			"",
 			"# Include File: [\Includes.SqlServer\Enumerate-SQLServer-Downloads.ps1]",
 			"function Enumerate-SQLServer-Downloads() {",
-			"  `$versions = `"2005-x86`", `"2008-x86`", `"2008-x64`", `"2008R2-x86`", `"2008R2-x64`", `"2012-x86`", `"2012-x64`", `"2014-x86`", `"2014-x64`", `"2016`", `"2017`", `"2019`", `"2022`";",
+			"  `$versions = `"2005-x86`", `"2008-x86`", `"2008-x64`", `"2008R2-x86`", `"2008R2-x64`", `"2012-x86`", `"2012-x64`", `"2014-x86`", `"2014-x64`", `"2016`", `"2017`", `"2019`", `"2022`", `"2025`";",
 			"  [array]::Reverse(`$versions);",
 			"  `$mediaTypes = `"LocalDB`", `"Core`", `"Advanced`", `"Developer`";",
 			"  [array]::Reverse(`$mediaTypes);",
@@ -3410,6 +3410,7 @@ $ModuleFiles = @(
 			"      # In case of via manager",
 			"      # `$url = IIf (`$mediaType -eq `"Developer`") `$meta.BaseDev `$meta.BaseExpress",
 			"      `$url = `$meta[`"`$mediaType`"]",
+			"      if (-not `$url) { continue; }",
 			"      `$ret[`"Url`"] = `$url;",
 			"      if (-not `$isMissingUpdates) { `$ret[`"CU`"] = `$meta.CU; }",
 			"      return `$ret;",
