@@ -2262,7 +2262,7 @@ Function Write-Line([string[]] $directArgs = @()) {
           $ansiValue = $ansiColors[$key];
           $ansi += $ansiValue;
           $isReset = ($key -eq "Reset");
-          if ($isReset) { $text="Gray"; $back="Black"; }
+          if ($isReset) { $text="Gray"; $back="Black"; <# $ansi += $ansiColors["Reset"] #> }
           if ($key -like "Text*") { $text = $key.SubString(4) }
           if ($key -like "Back*") { $back = $key.SubString(4) }
           $isControl = $true;
@@ -3733,7 +3733,7 @@ function Publish-SQLServer-SetupLogs([string] $toFolder, $compression=9) {
 }
 
 # Include File: [\Includes.SqlServer\Query-SqlServer-Version.ps1]
-function Query-SqlServer-Version([string] $title, [string] $connectionString, <# or #>[string] $instance, [int] $timeoutSec = 30) {
+function Query-SqlServer-Version([string] $title, [string] $connectionString, <# or #>[string] $instance, [int] $timeoutSec = 30, [string] $kind = "Medium" <# or Title #>) {
   if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=3;Pooling=False" }
   $startAt = [System.Diagnostics.Stopwatch]::StartNew();
   $exception = $null;
@@ -3748,6 +3748,9 @@ Cast(ISNULL(ServerProperty('ProductLevel'), '') as nvarchar(222)) + ' ' +
 Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar(222)) + 
 (Case ServerProperty('IsFullTextInstalled') When 1 Then ' + Full-text' Else '' End);
 "@;
+      if ($kind -eq "Title") {
+        $sql = "SET NOCOUNT ON; Declare @ret nvarchar(1000); SELECT @ret = CAST(LEFT(@@VERSION, CHARINDEX(CHAR(10), @@VERSION) - 1) AS NVARCHAR(MAX)) + (Case ServerProperty('IsLocalDB') When 1 Then 'LocalDB' Else '' End) + ' ' + Cast(ISNULL(ServerProperty('Edition'), '') as nvarchar(222)) + ' ' + Cast(ISNULL(ServerProperty('ProductLevel'), '') as nvarchar(222)) + ' ' + Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar(222)); Set @ret = Replace(@ret, '  ', ' '); Set @ret = Replace(@ret, '  ', ' '); Select @ret;"
+      }
       $con = New-Object System.Data.SqlClient.SqlConnection($connectionString);
       $con.Open();
       $cmd = new-object System.Data.SqlClient.SqlCommand($sql, $con)
@@ -3761,7 +3764,6 @@ Cast(ISNULL(ServerProperty('ProductUpdateLevel'), '') as nvarchar(222)) +
     } catch { $exception = $_.Exception; <# Write-Host $_.Exception -ForegroundColor DarkGray #> }
   } while($startAt.ElapsedMilliseconds -le ($timeoutSec * 1000));
   Write-Host "Warning! Can't query version of SQL Server '$($title)' during $($startAt.ElapsedMilliseconds / 1000) seconds$([Environment]::NewLine)$($exception)" -ForegroundColor DarkRed
-
 }
 
 # Query-SqlServer-Version -Title "FAKE" -Instance "(local)\22" -Timeout 2
