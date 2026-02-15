@@ -2583,7 +2583,7 @@ $SqlServerDownloadLinks_Via_Manager = @(
 
 # Include File: [\Includes.SqlServer\Clean-Up-Sql-Server-Databases.ps1]
 function Clean-Up-Sql-Server-Databases([string] $title, [string] $connectionString, <# or #>[string] $instance, [ScriptBlock] $filter, [int] $timeoutSec = 30) {
-  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=$timeoutSec;Pooling=False" }
+  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=$timeoutSec;Pooling=False;Encrypt=False;TrustServerCertificate=True;" }
   $startAt = [System.Diagnostics.Stopwatch]::StartNew();
 
   $builder = new-object System.Data.SqlClient.SqlConnectionStringBuilder($connectionString);
@@ -3627,7 +3627,7 @@ function Stop-LocalDB-Instance([string] $title, [string] $version, [string] $ins
 
 # Include File: [\Includes.SqlServer\Invoke-SqlServer-Command.ps1]
 function Invoke-SqlServer-Command([string] $title, [string] $connectionString, <# or #>[string] $instance, [string] $sqlCommand, [int] $timeoutSec = 30) {
-  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=10;Pooling=False" }
+  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=10;Pooling=False;Encrypt=False;TrustServerCertificate=True;" }
   $startAt = [System.Diagnostics.Stopwatch]::StartNew();
   $exception = $null;
 
@@ -3735,7 +3735,7 @@ function Publish-SQLServer-SetupLogs([string] $toFolder, $compression=9) {
 
 # Include File: [\Includes.SqlServer\Query-SqlServer-Version.ps1]
 function Query-SqlServer-Version([string] $title, [string] $connectionString, <# or #>[string] $instance, [int] $timeoutSec = 30, [string] $kind = "Medium" <# or Title #>) {
-  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=3;Pooling=False" }
+  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=3;Pooling=False;Encrypt=False;TrustServerCertificate=True;" }
   $startAt = [System.Diagnostics.Stopwatch]::StartNew();
   $exception = $null;
   do {
@@ -3818,7 +3818,7 @@ GO
 
 # Include File: [\Includes.SqlServer\Set-SQLServer-Options.ps1]
 function Set-SQLServer-Options([string] $title, [string] $connectionString, <# or #>[string] $instance, [hashtable] $options, [int] $timeoutSec = 30) {
-  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=10;Pooling=False" }
+  if (-not $connectionString) { $connectionString = "Server=$($instance);Integrated Security=SSPI;Connection Timeout=10;Pooling=False;Encrypt=False;TrustServerCertificate=True;" }
   $startAt = [System.Diagnostics.Stopwatch]::StartNew();
   $exception = $null;
   $keys = @($options | % { $_.Keys })
