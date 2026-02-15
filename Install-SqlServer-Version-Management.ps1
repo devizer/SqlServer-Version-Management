@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.195';
+$ModuleVersion = '2.1.196';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.195`"",
+			"  ModuleVersion = `"2.1.196`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -4230,7 +4230,8 @@ $ModuleFiles = @(
 			"    if (`$updateGot -and `$updateGot.UpdateLauncher) {",
 			"      `$updateGot | ft -AutoSize | Out-Host",
 			"      `$title = `"Update Shared Tools and LocalDB version `$(`$version)`"",
-			"      `$setupArg = @(`"/q`", `"/IAcceptSQLServerLicenseTerms`", `"/Action=Patch`");",
+			"      # /SkipRules=RebootRequiredCheck is safe since 2008",
+			"      `$setupArg = @(`"/q`", `"/IAcceptSQLServerLicenseTerms`", `"/Action=Patch`", `"/SkipRules=RebootRequiredCheck`");",
 			"      `$setupStatus = Execute-Process-Smarty `"`$title`" `$updateGot.UpdateLauncher `$setupArg -WaitTimeout 3600",
 			"      `$setupStatus | Format-Table-Smarty | Out-Host",
 			"      if (`$setupStatus -and `$upgradeResult.Error) { ",

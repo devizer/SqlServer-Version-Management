@@ -4097,7 +4097,8 @@ function Update-SqlServer-LocalDB-and-Shared-Tools([string[]] $versions) {
     if ($updateGot -and $updateGot.UpdateLauncher) {
       $updateGot | ft -AutoSize | Out-Host
       $title = "Update Shared Tools and LocalDB version $($version)"
-      $setupArg = @("/q", "/IAcceptSQLServerLicenseTerms", "/Action=Patch");
+      # /SkipRules=RebootRequiredCheck is safe since 2008
+      $setupArg = @("/q", "/IAcceptSQLServerLicenseTerms", "/Action=Patch", "/SkipRules=RebootRequiredCheck");
       $setupStatus = Execute-Process-Smarty "$title" $updateGot.UpdateLauncher $setupArg -WaitTimeout 3600
       $setupStatus | Format-Table-Smarty | Out-Host
       if ($setupStatus -and $upgradeResult.Error) { 
