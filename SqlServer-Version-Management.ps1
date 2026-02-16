@@ -22,7 +22,7 @@ The guide: https://devizer.github.io/SqlServer-Version-Management
    $errors = Setup-SqlServers -SqlServers "2025 Developer: MSSQLSERVER"
 
  .Example
-   $errors = Setup-SqlServers -SqlServers "2025 Developer: DEVELOPER2022, 2019 Developer: DEVELOPER2019"
+   $errors = Setup-SqlServers -SqlServers "2025 Developer: DEVELOPER2025, 2019 Developer: DEVELOPER2019"
 
  .Example
    # Next example installs 32 or 64 bit Sql Server 2014 depending on Windows Architecture
@@ -3411,7 +3411,10 @@ function Install-SQLServer {
   if ($meta.MediaType -eq "LocalDB") {
      Write-Host "Installing LocalDB MSI `"$($meta.Launcher)`" Version $($meta.Version)"
      $logDir = if ("$($ENV:SYSTEM_ARTIFACTSDIRECTORY)") { "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" } else { "$($ENV:TEMP)" }
-     $setupCommandLine = @("/c", "msiexec.exe", "/i", "`"$($meta.Launcher)`"", "IACCEPTSQLLOCALDBLICENSETERMS=YES", "/qn", "/L*v", "SqlLocalDB-Setup-$($meta.Version).log");
+     $log_file_name = "SqlLocalDB-Setup-$($meta.Version).log"
+     $log_file_name = Get-LogFile-Name-for-LocalDB-Setup "$($meta.Version)"
+     Write-Host "Log file for LocalDB $($meta.Version) Setup is '$log_file_name'"
+     $setupCommandLine = @("/c", "msiexec.exe", "/i", "`"$($meta.Launcher)`"", "IACCEPTSQLLOCALDBLICENSETERMS=YES", "/qn", "/L*v", "`"$log_file_name`"");
      $setupStatus = Execute-Process-Smarty "SQL LocalDB $($meta.Version) Setup" "cmd.exe" $setupCommandLine -WaitTimeout 1800
      $setupStatus | Format-Table-Smarty | Out-Host
      return $setupStatus;
@@ -3594,6 +3597,18 @@ function Install-SQLServer {
       if ($err) { return @{ Error = $err }; }
     }
   }
+}
+
+function Get-LogFile-Name-for-LocalDB-Setup([string] $Version) {
+  $sysDrive = "$($ENV:SystemDrive)"
+  $folders = @("$sysDrive\Program Files", "$sysDrive\Program Files (x86)", "C:\Program Files", "C:\Program Files (x86)", "$($Env:ProgramFiles)", "${Env:ProgramFiles(x86)}")
+  $folders = ($folders | sort | Get-Unique | ? { [System.IO.Directory]::Exists("$_") } )
+  $program_files = $folders | Select -First 1
+  $logFolder = Combine-Path $program_files "Microsoft SQL Server" $Version "Setup Bootstrap" "LOG"
+  $logFile = "LocalDB-$Version-Setup-Log-$([DateTime]::UtcNow.ToString("yyyyMMddHHmmss")).log"
+  $ret = Combine-Path $logFolder $logFile
+  New-Item -ItemType Directory -Path "$logFolder" -EA SilentlyContinue | out-null;
+  return $ret;
 }
 
 # Include File: [\Includes.SqlServer\Invoke-LocalDB-Executable.ps1]
