@@ -1305,6 +1305,9 @@ function Is-Intel-Emulation-Available([int] $bitCount <# 32|64 #> = 64) {
 
 # Include File: [\Includes\Is-Microsoft-Hosted-Build-Agent.ps1]
 function Is-Microsoft-Hosted-Build-Agent() {
+    Write-Host "[Debug] ENV:TF_BUILD = [$env:TF_BUILD]"
+    Write-Host "[Debug] ENV:AGENT_ISSELFHOSTED = [$env:AGENT_ISSELFHOSTED]"
+    Write-Host "[Debug] ENV:RUNNER_ENVIRONMENT = [$env:RUNNER_ENVIRONMENT]"
     if ((To-Boolean "Env var TF_BUILD" $env:TF_BUILD) -eq $true) {
         if ((("$env:AGENT_ISSELFHOSTED") -eq "0") -or 
             (("$env:AGENT_ISSELFHOSTED".ToLower()) -eq "false") -or 

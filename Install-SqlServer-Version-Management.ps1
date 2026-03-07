@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.206';
+$ModuleVersion = '2.1.207';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.206`"",
+			"  ModuleVersion = `"2.1.207`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1438,6 +1438,9 @@ $ModuleFiles = @(
 			"",
 			"# Include File: [\Includes\Is-Microsoft-Hosted-Build-Agent.ps1]",
 			"function Is-Microsoft-Hosted-Build-Agent() {",
+			"    Write-Host `"[Debug] ENV:TF_BUILD = [`$env:TF_BUILD]`"",
+			"    Write-Host `"[Debug] ENV:AGENT_ISSELFHOSTED = [`$env:AGENT_ISSELFHOSTED]`"",
+			"    Write-Host `"[Debug] ENV:RUNNER_ENVIRONMENT = [`$env:RUNNER_ENVIRONMENT]`"",
 			"    if ((To-Boolean `"Env var TF_BUILD`" `$env:TF_BUILD) -eq `$true) {",
 			"        if (((`"`$env:AGENT_ISSELFHOSTED`") -eq `"0`") -or ",
 			"            ((`"`$env:AGENT_ISSELFHOSTED`".ToLower()) -eq `"false`") -or ",
