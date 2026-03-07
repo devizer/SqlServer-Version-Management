@@ -1303,6 +1303,28 @@ function Is-Intel-Emulation-Available([int] $bitCount <# 32|64 #> = 64) {
 
 
 
+# Include File: [\Includes\Is-Microsoft-Hosted-Build-Agent.ps1]
+function Is-Microsoft-Hosted-Build-Agent() {
+    if ((To-Boolean "Env var TF_BUILD" $env:TF_BUILD) -eq $true) {
+        if ((("$env:AGENT_ISSELFHOSTED") -eq "0") -or 
+            (("$env:AGENT_ISSELFHOSTED".ToLower()) -eq "false") -or 
+            ($env:AGENT_NAME -eq "Hosted Agent") -or 
+            ($env:AGENT_NAME -eq "Azure Pipelines") -or 
+            ($env:AGENT_NAME -like "Azure Pipelines *") -or 
+            ($env:AGENT_NAME -eq "ubuntu-latest") -or 
+            ($env:AGENT_NAME -eq "windows-latest") -or 
+            ($env:AGENT_NAME -eq "macos-latest")) {
+            return $true
+        }
+    }
+
+    if ($env:RUNNER_ENVIRONMENT -eq "github-hosted") {
+        return $true
+    }
+
+    return $false
+}
+
 # Include File: [\Includes\Is-SshClient.ps1]
 function Is-SshClient() {
   $simpleKeys = @(
@@ -1949,6 +1971,7 @@ function Setup-VisualStudio([string] $VSID, [string[]] $arguments) {
 
     # IDE with Web and Managed Desktop plus "Mini"
     Setup-VisualStudio "2026 Enterprise" "Basic Components"
+    Setup-VisualStudio "2022 Community" "Basic Components"
 
     # Custom workloads and components
     Setup-VisualStudio "2026 Community" "--add Microsoft.VisualStudio.Workload.Azure --addProductLang en-US --includeRecommended --includeOptional --wait --force --passive --norestart".Split(" ")

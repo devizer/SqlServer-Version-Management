@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.205';
+$ModuleVersion = '2.1.206';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.205`"",
+			"  ModuleVersion = `"2.1.206`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -1436,6 +1436,28 @@ $ModuleFiles = @(
 			"",
 			"",
 			"",
+			"# Include File: [\Includes\Is-Microsoft-Hosted-Build-Agent.ps1]",
+			"function Is-Microsoft-Hosted-Build-Agent() {",
+			"    if ((To-Boolean `"Env var TF_BUILD`" `$env:TF_BUILD) -eq `$true) {",
+			"        if (((`"`$env:AGENT_ISSELFHOSTED`") -eq `"0`") -or ",
+			"            ((`"`$env:AGENT_ISSELFHOSTED`".ToLower()) -eq `"false`") -or ",
+			"            (`$env:AGENT_NAME -eq `"Hosted Agent`") -or ",
+			"            (`$env:AGENT_NAME -eq `"Azure Pipelines`") -or ",
+			"            (`$env:AGENT_NAME -like `"Azure Pipelines *`") -or ",
+			"            (`$env:AGENT_NAME -eq `"ubuntu-latest`") -or ",
+			"            (`$env:AGENT_NAME -eq `"windows-latest`") -or ",
+			"            (`$env:AGENT_NAME -eq `"macos-latest`")) {",
+			"            return `$true",
+			"        }",
+			"    }",
+			"",
+			"    if (`$env:RUNNER_ENVIRONMENT -eq `"github-hosted`") {",
+			"        return `$true",
+			"    }",
+			"",
+			"    return `$false",
+			"}",
+			"",
 			"# Include File: [\Includes\Is-SshClient.ps1]",
 			"function Is-SshClient() {",
 			"  `$simpleKeys = @(",
@@ -2082,6 +2104,7 @@ $ModuleFiles = @(
 			"",
 			"    # IDE with Web and Managed Desktop plus `"Mini`"",
 			"    Setup-VisualStudio `"2026 Enterprise`" `"Basic Components`"",
+			"    Setup-VisualStudio `"2022 Community`" `"Basic Components`"",
 			"",
 			"    # Custom workloads and components",
 			"    Setup-VisualStudio `"2026 Community`" `"--add Microsoft.VisualStudio.Workload.Azure --addProductLang en-US --includeRecommended --includeOptional --wait --force --passive --norestart`".Split(`" `")",
