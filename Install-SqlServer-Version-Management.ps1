@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.207';
+$ModuleVersion = '2.1.208';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -15,7 +15,7 @@ $ModuleFiles = @(
 			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.207`"",
+			"  ModuleVersion = `"2.1.208`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -4365,6 +4365,7 @@ $ModuleFiles = @(
 			"Export-ModuleMember -Function Get-Mini7z-Exe-FullPath-for-Windows",
 			"Export-ModuleMember -Function Get-Nix-Uname-Value",
 			"Export-ModuleMember -Function Get-Os-Platform",
+			"Export-ModuleMember -Function Is-Microsoft-Hosted-Build-Agent",
 			"Export-ModuleMember -Function Get-PS1-Repo-Downloads-Folder",
 			"Export-ModuleMember -Function Get-Random-Free-Port",
 			"Export-ModuleMember -Function Get-Smarty-FileHash",
