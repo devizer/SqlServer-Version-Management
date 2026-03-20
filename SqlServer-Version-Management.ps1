@@ -2474,9 +2474,10 @@ $SqlServerDownloadLinks = @(
          "https://download.microsoft.com/download/dea8c210-c44a-4a9d-9d80-0c81578860c5/ENU/SQLServer2025-x64-ENU.exe")
       
       CU=@(
-        @{ Id="CU1"; 
+        @{ Id="CU3"; 
            Url=@(
-            "https://download.microsoft.com/download/69e0b8fc-1c50-41bd-a576-b9c66b2f302a/SQLServer2025-KB5078298-x64.exe",
+            # "https://download.microsoft.com/download/69e0b8fc-1c50-41bd-a576-b9c66b2f302a/SQLServer2025-KB5078298-x64.exe",
+            "https://download.microsoft.com/download/69e0b8fc-1c50-41bd-a576-b9c66b2f302a/SQLServer2025-KB5077896-x64.exe",
             "https://archive.org/download/sql_server_2016_2017_2019_2022_comulative_updates/SQLServer2025-KB5078298-x64.exe"
            );
          }
