@@ -3708,6 +3708,7 @@ function ParseNonEmptyTrimmedLines([string] $raw) {
 # Include File: [\Includes.SqlServer\Parse-SqlServers-Input.ps1]
 function Parse-SqlServers-Input { param( [string] $list)
     # Say "Installing SQL Server(s) by tags: $list"
+    # 44 - comma, 59 - semicolon; 58 - colon
     $rawServerList = "$list".Replace("`r"," ").Replace("`n"," ").Split(@([char]44, [char]59));
     foreach($sqlDef in $rawServerList) {
         $arr = $sqlDef.Split(@([char]58));
@@ -3947,6 +3948,13 @@ Param(
    $jsonReport = @();
    foreach($server in $servers) {
      $startAt = [System.Diagnostics.Stopwatch]::StartNew()
+     $instanceName = $server.InstanceName;
+     $serviceName = if ($instanceName -eq 'MSSQLSERVER') { 'MSSQLSERVER' } else { "MSSQL`$$instanceName" }
+     $serviceExists = [bool](Get-Service -Name $serviceName -ErrorAction SilentlyContinue)
+     if ($serviceExists) {
+        Write-Line -TextCyan "Service $serviceName already exists. Skipping downloading and installing SQL Server $($server.Version) $($server.MediaType)"
+        continue;
+     }
      Say "Downloading SQL Server '$($server.Version) $($server.MediaType)'"
      $setupMeta = Download-SQLServer-and-Extract $server.Version $server.MediaType;
      $setupMeta | Format-Table -AutoSize | Out-String -Width 256 | Out-Host

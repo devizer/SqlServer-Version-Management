@@ -4,7 +4,7 @@ Param(
 )
 
 $ModuleName = 'SqlServer-Version-Management';
-$ModuleVersion = '2.1.210';
+$ModuleVersion = '2.1.211';
 $ModuleFiles = @(
 	@{
 		FileName = 'SqlServer-Version-Management\SqlServer-Version-Management.psd1';
@@ -12,10 +12,10 @@ $ModuleFiles = @(
 			"@{",
 			"",
 			"  # RootModule = 'SqlServer-Version-Management.psm1'",
-			"  ModuleToProcess = @('SqlServer-Version-Management.psm1')",
+			"  ModuleToProcess = @('DevOps.psm1')",
 			"",
 			"  # Version below is automatically incremented on build",
-			"  ModuleVersion = `"2.1.210`"",
+			"  ModuleVersion = `"2.1.211`"",
 			"",
 			"  GUID = 'dd03b53d-575a-4056-ae08-e6dfea3384ea'",
 			"",
@@ -23,7 +23,7 @@ $ModuleFiles = @(
 			"",
 			"  CompanyName = ''",
 			"",
-			"  Copyright = '(c) 2010-2025 devizer.'",
+			"  Copyright = '(c) 2010-2026 devizer.'",
 			"",
 			"  Description = @`"",
 			"SQL Server Setup and Version Management Guide: https://devizer.github.io/SqlServer-Version-Management",
@@ -3841,6 +3841,7 @@ $ModuleFiles = @(
 			"# Include File: [\Includes.SqlServer\Parse-SqlServers-Input.ps1]",
 			"function Parse-SqlServers-Input { param( [string] `$list)",
 			"    # Say `"Installing SQL Server(s) by tags: `$list`"",
+			"    # 44 - comma, 59 - semicolon; 58 - colon",
 			"    `$rawServerList = `"`$list`".Replace(`"``r`",`" `").Replace(`"``n`",`" `").Split(@([char]44, [char]59));",
 			"    foreach(`$sqlDef in `$rawServerList) {",
 			"        `$arr = `$sqlDef.Split(@([char]58));",
@@ -4080,6 +4081,13 @@ $ModuleFiles = @(
 			"   `$jsonReport = @();",
 			"   foreach(`$server in `$servers) {",
 			"     `$startAt = [System.Diagnostics.Stopwatch]::StartNew()",
+			"     `$instanceName = `$server.InstanceName;",
+			"     `$serviceName = if (`$instanceName -eq 'MSSQLSERVER') { 'MSSQLSERVER' } else { `"MSSQL```$`$instanceName`" }",
+			"     `$serviceExists = [bool](Get-Service -Name `$serviceName -ErrorAction SilentlyContinue)",
+			"     if (`$serviceExists) {",
+			"        Write-Line -TextCyan `"Service `$serviceName already exists. Skipping downloading and installing SQL Server `$(`$server.Version) `$(`$server.MediaType)`"",
+			"        continue;",
+			"     }",
 			"     Say `"Downloading SQL Server '`$(`$server.Version) `$(`$server.MediaType)'`"",
 			"     `$setupMeta = Download-SQLServer-and-Extract `$server.Version `$server.MediaType;",
 			"     `$setupMeta | Format-Table -AutoSize | Out-String -Width 256 | Out-Host",
